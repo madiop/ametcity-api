@@ -3,7 +3,7 @@ fos_rest:
     body_converter:
         enabled: true
 #    param_fetcher_listener:  true
-#    allowed_methods_listener:  true
+    allowed_methods_listener:  true
 #    routing_loader: true
     view:
         view_response_listener:  true
@@ -15,4 +15,4 @@ fos_rest:
 #            App\Exception\MyException: Forbidden area.
     format_listener:
         rules:
-           - { path: ^/api, prefer_extension: true, fallback_format: json, priorities: [ json, html ] }
+           - { path: ^/api, prefer_extension: true, fallback_format: json, priorities: [ json, xml ] }
