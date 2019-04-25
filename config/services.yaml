@@ -27,3 +27,15 @@ services:
     # please note that last definitions always *replace* previous ones
     sensio_framework_extra.view.listener:
         alias: Sensio\Bundle\FrameworkExtraBundle\EventListener\TemplateListener
+    
+    Symfony\Component\Serializer\Normalizer\ObjectNormalizer:
+        class: Symfony\Component\Serializer\Normalizer\ObjectNormalizer
+        public: true
+        tags:
+          - { name: 'serializer.normalizer' }
+
+    Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer:
+        class: Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer
+        public: true
+        tags:
+          - { name: 'serializer.normalizer' }
