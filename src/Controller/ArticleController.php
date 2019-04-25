@@ -15,19 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 class ArticleController extends FOSRestController
-{
-    /**
-     * @Route("/article", name="article")
-     * @param
-     */
-    public function index()
-    {
-        return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/ArticleController.php',
-        ]);
-    }
-    
+{    
     /**
      * Creates an Article resource
      * @Rest\Post("/articles")
