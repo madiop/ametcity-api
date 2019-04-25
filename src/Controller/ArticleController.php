@@ -16,21 +16,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 class ArticleController extends FOSRestController
 {
-    // private $repository;
-    // private $em;
-
-    // public function __construct()
-    // {
-    //     $this->em = $this->getDoctrine()->getManager();
-    //     $this->repository = $this->getDoctrine()->getRepository(Article::class);
-    // }
-
-    /*
-     * Create Article.
-     * @Rest\Get(path = "/article", name = "app_article_list")
-     *
-     * @return array
-     */
     /**
      * @Route("/article", name="article")
      * @param
@@ -61,13 +46,6 @@ class ArticleController extends FOSRestController
             $em = $this->getDoctrine()->getManager();
             $em->persist($article);
             $em->flush();
-            
-            $responseObject = array(
-                "response" => "success",
-                "message" => sprintf('Article %s successfully created', $article->getTitle())
-            );
-
-            // return new JsonResponse($responseObject);
 
             // In case our POST was a success we need to return a 201 HTTP CREATED response
             return View::create($article, Response::HTTP_CREATED);
@@ -90,7 +68,6 @@ class ArticleController extends FOSRestController
      */
     public function getArticle(Article $article): View
     {
-        // $article = $this->articleRepository->findById($articleId);
         // In case our GET was a success we need to return a 200 HTTP OK response with the request object
         return View::create($article, Response::HTTP_OK);
     }
@@ -125,9 +102,6 @@ class ArticleController extends FOSRestController
         
         $myArticle->setTitle($data['title']);
         $myArticle->setContent($data['content']);
-
-        // $myArticle->setTitle($article->getTitle());
-        // $myArticle->setContent($article->getContent());
 
         $em->persist($myArticle);
         $em->flush();
