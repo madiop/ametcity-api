@@ -2,6 +2,11 @@
 
 namespace App\Repository;
 
+use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\QueryBuilder;
+use Pagerfanta\Adapter\DoctrineORMAdapter;
+use Pagerfanta\Pagerfanta;
+
 use App\Entity\Article;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
@@ -12,11 +17,23 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
  * @method Article[]    findAll()
  * @method Article[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class ArticleRepository extends ServiceEntityRepository
+class ArticleRepository extends AbstractRepository
 {
-    public function __construct(RegistryInterface $registry)
+    public function search($term, $order = 'asc', $limit = 20, $offset = 0)
     {
-        parent::__construct($registry, Article::class);
+        $qb = $this
+            ->createQueryBuilder('a')
+            ->orderBy('a.title', $order)
+        ;
+        
+        if ($term) {
+            $qb
+                ->andWhere('a.title LIKE :term')
+                ->setParameter('term', '%'.$term.'%')
+            ;
+        }
+        
+        return $this->paginate($qb, $limit, $offset);
     }
 
     // /**
@@ -47,4 +64,5 @@ class ArticleRepository extends ServiceEntityRepository
         ;
     }
     */
+
 }
