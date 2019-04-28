@@ -5,8 +5,6 @@ namespace App\Controller;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Request\ParamFetcherInterface;
-// use FOS\RestBundle\View\View;
-// use FOS\RestBundle\Controller\Annotations\View;
 use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -19,17 +17,19 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 use App\Repository\ArticleRepository;
 use App\Entity\Article;
-use App\Exception\ResourceValidationException;
+use App\Validators\Validator;
 
 class ArticleController extends FOSRestController
 {   
     private $repository;
     private $em;
+    private $dataValidator;
 
-    public function __construct(ArticleRepository $repository, EntityManagerInterface $em)
+    public function __construct(ArticleRepository $repository, EntityManagerInterface $em, Validator $validator)
     {
         $this->repository = $repository;
         $this->em = $em;
+        $this->dataValidator = $validator;
     }
 
     // *     requirements="[a-zA-Z0-9]",
@@ -96,8 +96,10 @@ class ArticleController extends FOSRestController
      * @Rest\View(populateDefaultVars=false, StatusCode = 201)
      * @ParamConverter("article", class="App\Entity\Article", converter="fos_rest.request_body")
      */
-    public function createArticle(Article $article): Article
+    public function createArticle(Article $article, ConstraintViolationList $violations): Article
     {
+        $this->dataValidator->validate($violations);
+
         $this->em->persist($article);
         $this->em->flush();
 
@@ -108,25 +110,24 @@ class ArticleController extends FOSRestController
      * Replaces Article resource
      * @Rest\Put("/articles/{id}")
      * @Rest\View(populateDefaultVars=false)
+     * @ParamConverter("article", class="App\Entity\Article", converter="fos_rest.request_body")
      */
-    public function putArticle(Article $article, Request $request): Article
-    {        
-        // $em = $this->getDoctrine()->getManager();
-        // $repository = $this->getDoctrine()->getRepository(Article::class);
+    public function putArticle(Article $article, ConstraintViolationList $violations): Article
+    {
+        $this->dataValidator->validate($violations);
+
         $myArticle = $this->repository->find($article->getId());
 
         if(is_null($myArticle)){
             throw new NotFoundHttpException("Article non trouver dans la base");
         }
-
-        $data = json_decode($request->getContent(), true);
         
-        $myArticle->setTitle($data['title']);
-        $myArticle->setContent($data['content']);
+        $myArticle->setTitle($article->getTitle());
+        $myArticle->setContent($article->getContent());
 
         $this->em->persist($myArticle);
         $this->em->flush();
-        // In case our PUT was a success we need to return a 200 HTTP OK response with the object as a result of PUT
+        
         return $myArticle;
     }
 

@@ -8,6 +8,7 @@ use Symfony\Component\Config\Resource\FileResource;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;
 use Symfony\Component\Routing\RouteCollectionBuilder;
+use App\DependencyInjection\Compiler\ExceptionNormalizerPass;
 
 class Kernel extends BaseKernel
 {
@@ -34,6 +35,7 @@ class Kernel extends BaseKernel
     {
         $container->addResource(new FileResource($this->getProjectDir().'/config/bundles.php'));
         $container->setParameter('container.dumper.inline_class_loader', true);
+        $container->addCompilerPass(new ExceptionNormalizerPass()); // Added By Madiop
         $confDir = $this->getProjectDir().'/config';
 
         $loader->load($confDir.'/{packages}/*'.self::CONFIG_EXTS, 'glob');

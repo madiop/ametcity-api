@@ -164,6 +164,9 @@
     "pagerfanta/pagerfanta": {
         "version": "v2.1.2"
     },
+    "pimple/pimple": {
+        "version": "v3.2.3"
+    },
     "psr/cache": {
         "version": "1.0.1"
     },
@@ -187,6 +190,9 @@
         "files": [
             "config/packages/sensio_framework_extra.yaml"
         ]
+    },
+    "silex/silex": {
+        "version": "v2.3.0"
     },
     "symfony/cache": {
         "version": "v4.2.7"

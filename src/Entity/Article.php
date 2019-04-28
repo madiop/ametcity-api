@@ -19,13 +19,13 @@ class Article
 
     /**
      * @ORM\Column(type="string", length=100)
-     * @Assert\NotBlank(message="Le titre ne doit pas être")
+     * @Assert\NotBlank(message="Le titre ne doit pas être vide")
      */
     private $title;
 
     /**
      * @ORM\Column(type="text")
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(message="Le contenu ne doit pas être vide")
      */
     private $content;
 

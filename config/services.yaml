@@ -40,3 +40,17 @@ services:
         public: true
         tags:
           - { name: 'serializer.normalizer' }
+
+    app.normalizer.resource_validation_exception:
+        class: App\Normalizer\NotFoundHttpExceptionNormalizer
+        arguments:
+            - { type: 'Symfony\Component\HttpKernel\Exception\NotFoundHttpException' }
+        tags:
+            - { name: app.normalizer }
+
+    app.exception_subscriber:
+        class: App\EventSubscriber\ExceptionListener
+        arguments:
+            - '@jms_serializer'
+        tags:
+            - { name: kernel.event_subscriber }
