@@ -75,15 +75,16 @@ class ArticleController extends FOSRestController
 
     /**
      * Retrieves an Article resource
-     * @Rest\Get("/articles/{id}")
+     * @Rest\Get(
+     *     path="/articles/{id}",
+     *     name="app_article_show",
+     *     requirements = {"id"="\d+"}
+     * )
      * 
      * @Rest\View(populateDefaultVars=false)
-     * 
      */
     public function getArticle(Article $article) : Article
     {
-        // In case our GET was a success we need to return a 200 HTTP OK response with the request object
-        // return View::create($article, Response::HTTP_OK);
         return $article;
     }
 
@@ -108,32 +109,33 @@ class ArticleController extends FOSRestController
 
     /**
      * Replaces Article resource
-     * @Rest\Put("/articles/{id}")
+     * @Rest\Put(
+     *     path="/articles/{id}",
+     *     name="app_article_update"
+     * )
      * @Rest\View(populateDefaultVars=false)
-     * @ParamConverter("article", class="App\Entity\Article", converter="fos_rest.request_body")
+     * @ParamConverter("newArticle", class="App\Entity\Article", converter="fos_rest.request_body")
      */
-    public function putArticle(Article $article, ConstraintViolationList $violations): Article
+    public function putArticle(Article $article, Article $newArticle, ConstraintViolationList $violations): Article
     {
         $this->dataValidator->validate($violations);
 
-        $myArticle = $this->repository->find($article->getId());
+        $article->setTitle($newArticle->getTitle());
+        $article->setContent($newArticle->getContent());
 
-        if(is_null($myArticle)){
-            throw new NotFoundHttpException("Article non trouver dans la base");
-        }
-        
-        $myArticle->setTitle($article->getTitle());
-        $myArticle->setContent($article->getContent());
-
-        $this->em->persist($myArticle);
+        $this->em->persist($article);
         $this->em->flush();
         
-        return $myArticle;
+        return $article;
     }
+    // * @ParamConverter("article", class="App\Entity\Article", converter="fos_rest.request_body")
 
     /**
      * Removes the Article resource
-     * @Rest\Delete("/articles/{id}")
+     * @Rest\Delete(
+     *     path="/articles/{id}",
+     *     name="app_article_delete"
+     * )
      * 
      * @Rest\View(
      *      populateDefaultVars=false,

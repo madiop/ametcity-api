@@ -10,9 +10,9 @@ class Validator
     public function validate(ConstraintViolationList $violations)
     {
         if (count($violations)) {
-            $message = 'The JSON sent contains invalid data. Here are the errors you need to correct: ';
+            $message = 'Données fournies invalides: ';
             foreach ($violations as $violation) {
-                $message .= sprintf("Field %s: %s ", $violation->getPropertyPath(), $violation->getMessage());
+                $message .= sprintf("Champ %s: %s ", $violation->getPropertyPath(), $violation->getMessage());
             }
 
             throw new ResourceValidationException($message);

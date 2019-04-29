@@ -10,6 +10,8 @@ fos_rest:
     view:
         view_response_listener:  true
         formats: { json: true, xml: false, rss: false }
+        mime_types:
+            json: ['application/json', 'application/json;version=1.0', 'application/json;version=2.0']
     exception:
         enabled: true
         codes:
@@ -18,4 +20,12 @@ fos_rest:
     format_listener:
         rules:
            - { path: ^/api, prefer_extension: true, fallback_format: json, priorities: [ json, xml ] }
+    serializer:
+        serialize_null: true
+    versioning:
+        enabled: true
+        resolvers:
+            media_type: # Accept header
+                enabled: true
+                regex: '/(v|version)=(?P<version>[0-9\.]+)/'        
 
