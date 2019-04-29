@@ -1,3 +1,29 @@
 #index:
 #    path: /
 #    controller: App\Controller\DefaultController::index
+register:
+    path: /register
+    controller: App\UserController\AuthController::register
+    methods: POST
+
+api:
+    path: /api
+    controller: App\UserController\AuthController::api
+
+login_check:
+    path:     /login_check
+    methods:  [POST]
+
+# user_routes:
+#     resource: ../src/UserController/
+#     type: annotation
+#     prefix: /user
+
+# rest_controller:
+#     resource: ../src/Controller/
+#     type: annotation
+#     prefix: /api
+
+# login_check:
+#     path:     /login_check
+#     methods:  [POST]
