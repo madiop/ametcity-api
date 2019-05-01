@@ -19,10 +19,10 @@ login_check:
 #     type: annotation
 #     prefix: /user
 
-# rest_controller:
-#     resource: ../src/Controller/
-#     type: annotation
-#     prefix: /api
+rest_controller:
+    resource: ../src/Controller/
+    type: annotation
+    prefix: /api
 
 # login_check:
 #     path:     /login_check

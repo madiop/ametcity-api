@@ -8,7 +8,6 @@ use Doctrine\ORM\Mapping as ORM;
 use Hateoas\Configuration\Annotation as Hateoas;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\ArticleRepository")
  * @Hateoas\Relation(
  *     "self",
  *     href = @Hateoas\Route(
@@ -30,6 +29,7 @@ use Hateoas\Configuration\Annotation as Hateoas;
  *          parameters = { "id" = "expr(object.getId())" }
  *      )
  * )
+ * @ORM\Entity(repositoryClass="App\Repository\ArticleRepository")
  * @Serializer\ExclusionPolicy("all")
  */
 class Article
