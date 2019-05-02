@@ -23,17 +23,20 @@ use App\Repository\ArticleRepository;
 use App\Entity\Article;
 use App\Validators\Validator;
 
-class ArticleController extends FOSRestController
+class ArticleController extends GenericController
 {   
     private $repository;
-    private $em;
-    private $dataValidator;
+    // private $em;
+    // private $dataValidator;
 
-    public function __construct(ArticleRepository $repository, EntityManagerInterface $em, Validator $validator)
+    public function __construct(ArticleRepository $repository, 
+                                EntityManagerInterface $em, 
+                                Validator $validator)
     {
+        parent::__construct($em, $validator);
         $this->repository = $repository;
-        $this->em = $em;
-        $this->dataValidator = $validator;
+        // $this->em = $em;
+        // $this->dataValidator = $validator;
     }
 
     // *     requirements="[a-zA-Z0-9]",
