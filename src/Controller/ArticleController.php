@@ -14,6 +14,10 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+// use Nelmio\ApiDocBundle\Annotation as Doc;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Nelmio\ApiDocBundle\Annotation\Security;
+use Swagger\Annotations as SWG;
 
 use App\Repository\ArticleRepository;
 use App\Entity\Article;
@@ -35,6 +39,41 @@ class ArticleController extends FOSRestController
     // *     requirements="[a-zA-Z0-9]",
     /**
      * Retrieves a collection of Article resource
+     * @SWG\Response(
+     *     response=200,
+     *     description="Retrieves a collection of Article resource",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Article::class, groups={"full"}))
+     *     )
+     * )
+     *     @SWG\Parameter(
+     *         name="keyword",
+     *         in="query",
+     *         description="Sort criterion",
+     *         type="string",
+     *     )
+     *     @SWG\Parameter(
+     *         name="order",
+     *         in="query",
+     *         description="Order criterion",
+     *         type="string",
+     *     )
+     *     @SWG\Parameter(
+     *         name="limit",
+     *         in="query",
+     *         description="Page number",
+     *         type="integer",
+     *     )
+     *     @SWG\Parameter(
+     *         name="offset",
+     *         in="query",
+     *         description="Page number",
+     *         type="integer",
+     *     )
+     * @SWG\Tag(name="articles")
+     * @Security(name="Bearer")
+     *
      * @Rest\Get("/articles")
      * @Rest\QueryParam(
      *     name="keyword",

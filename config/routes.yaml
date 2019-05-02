@@ -14,16 +14,20 @@ login_check:
     path:     /login_check
     methods:  [POST]
 
-# user_routes:
-#     resource: ../src/UserController/
-#     type: annotation
-#     prefix: /user
-
 rest_controller:
     resource: ../src/Controller/
     type: annotation
     prefix: /api
 
-# login_check:
-#     path:     /login_check
-#     methods:  [POST]
+# app/config/routing.yml
+# NelmioApiDocBundle:
+#     resource: "@NelmioApiDocBundle/Resources/config/routing.yml"
+#     prefix:   /api/doc
+app.swagger_ui:
+    path: /api/doc
+    methods: GET
+    defaults: { _controller: nelmio_api_doc.controller.swagger_ui }
+app.swagger:
+    path: /api/doc.json
+    methods: GET
+    defaults: { _controller: nelmio_api_doc.controller.swagger }
