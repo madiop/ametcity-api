@@ -6,6 +6,7 @@ use JMS\Serializer\Annotation as Serializer;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 
+// * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
 /**
  * 
  * @Serializer\ExclusionPolicy("all")
@@ -20,73 +21,91 @@ class User implements UserInterface
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
+
     /**
      * @ORM\Column(type="string", length=25, unique=true)
+     * @Serializer\Expose
      */
     private $username;
+
     /**
      * @ORM\Column(type="string", length=500)
+     * @Serializer\Expose
      */
     private $password;
+
     /**
      * @ORM\Column(name="is_active", type="boolean")
+     * @Serializer\Expose
      */
     private $isActive;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Serializer\Expose
      */
     private $prenom;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Serializer\Expose
      */
     private $nom;
 
     /**
      * @ORM\Column(type="string", length=100, nullable=true)
+     * @Serializer\Expose
      */
     private $email;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Serializer\Expose
      */
     private $telephone;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Serializer\Expose
      */
     private $confirmationToken;
 
     /**
      * @ORM\Column(type="boolean", nullable=true)
+     * @Serializer\Expose
      */
     private $status;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Serializer\Expose
      */
     private $dateInscription;
 
     /**
      * @ORM\Column(type="text", nullable=true)
+     * @Serializer\Expose
      */
     private $adresse;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Serializer\Expose
      */
     private $civilite;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Serializer\Expose
      */
     private $ville;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Serializer\Expose
      */
     private $pays;
+
     public function __construct($username)
     {
         $this->isActive = true;

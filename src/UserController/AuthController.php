@@ -25,14 +25,13 @@ class AuthController extends AbstractController
     //  * @Rest\View(populateDefaultVars=false, StatusCode = 201)
     public function register(User $user, UserPasswordEncoderInterface $encoder)
     {
-        // echo $user->getPassword();
-        var_dump($user);
-        exit;
+        // var_dump($user);
+        // exit;
         $password = $user->getPassword();
         $user->setPassword('');
         $user->setPassword($encoder->encodePassword($user, $password));
-        // $user->setDateInscription(new \DateTime());
-        // $user->setIsActive(true);
+        $user->setDateInscription(new \DateTime());
+        $user->setIsActive(true);
 
         // var_dump($user);
         // exit;
