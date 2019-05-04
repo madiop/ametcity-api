@@ -1,10 +1,9 @@
 <?php
 
 namespace App\Repository;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 
 use App\Entity\Professionels;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
  * @method Professionel|null find($id, $lockMode = null, $lockVersion = null)
@@ -12,11 +11,28 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
  * @method Professionel[]    findAll()
  * @method Professionel[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class ProfessionelsRepository extends ServiceEntityRepository
+class ProfessionelsRepository extends AbstractRepository
 {
     public function __construct(RegistryInterface $registry)
     {
-        parent::__construct($registry, Professionel::class);
+        parent::__construct($registry, Professionels::class);
+    }
+
+    public function search($term, $order = 'asc', $limit = 20, $offset = 0)
+    {
+        $qb = $this
+            ->createQueryBuilder('p')
+            // ->orderBy('a.title', $order)
+        ;
+        
+        // if ($term) {
+        //     $qb
+        //         ->andWhere('a.title LIKE :term')
+        //         ->setParameter('term', '%'.$term.'%')
+        //     ;
+        // }
+        
+        return $this->paginate($qb, $limit, $offset);
     }
 
     // /**

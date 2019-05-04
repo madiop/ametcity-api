@@ -2,19 +2,11 @@
 
 namespace App\Controller;
 
-use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Request\ParamFetcherInterface;
 use Symfony\Component\Validator\ConstraintViolationList;
-use Symfony\Component\Validator\ConstraintViolationListInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-// use Nelmio\ApiDocBundle\Annotation as Doc;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Nelmio\ApiDocBundle\Annotation\Security;
 use Swagger\Annotations as SWG;
@@ -26,8 +18,6 @@ use App\Validators\Validator;
 class ArticleController extends GenericController
 {   
     private $repository;
-    // private $em;
-    // private $dataValidator;
 
     public function __construct(ArticleRepository $repository, 
                                 EntityManagerInterface $em, 
@@ -35,8 +25,6 @@ class ArticleController extends GenericController
     {
         parent::__construct($em, $validator);
         $this->repository = $repository;
-        // $this->em = $em;
-        // $this->dataValidator = $validator;
     }
 
     // *     requirements="[a-zA-Z0-9]",
@@ -50,30 +38,30 @@ class ArticleController extends GenericController
      *         @SWG\Items(ref=@Model(type=Article::class, groups={"full"}))
      *     )
      * )
-     *     @SWG\Parameter(
-     *         name="keyword",
-     *         in="query",
-     *         description="Sort criterion",
-     *         type="string",
-     *     )
-     *     @SWG\Parameter(
-     *         name="order",
-     *         in="query",
-     *         description="Order criterion",
-     *         type="string",
-     *     )
-     *     @SWG\Parameter(
-     *         name="limit",
-     *         in="query",
-     *         description="Page number",
-     *         type="integer",
-     *     )
-     *     @SWG\Parameter(
-     *         name="offset",
-     *         in="query",
-     *         description="Page number",
-     *         type="integer",
-     *     )
+     * @SWG\Parameter(
+     *     name="keyword",
+     *     in="query",
+     *     description="Sort criterion",
+     *     type="string",
+     * )
+     * @SWG\Parameter(
+     *     name="order",
+     *     in="query",
+     *     description="Order criterion",
+     *     type="string",
+     * )
+     * @SWG\Parameter(
+     *     name="limit",
+     *     in="query",
+     *     description="Page number",
+     *     type="integer",
+     * )
+     * @SWG\Parameter(
+     *     name="offset",
+     *     in="query",
+     *     description="Page number",
+     *     type="integer",
+     * )
      * @SWG\Tag(name="articles")
      * @Security(name="Bearer")
      *
@@ -105,7 +93,7 @@ class ArticleController extends GenericController
      */
     public function listArticles(ParamFetcherInterface $paramFetcher)//: array
     {
-        $pager = $this->getDoctrine()->getRepository(Article::class)->search(
+        $pager = $this->repository->search(
             $paramFetcher->get('keyword'),
             $paramFetcher->get('order'),
             $paramFetcher->get('limit'),
@@ -115,8 +103,20 @@ class ArticleController extends GenericController
         return $pager->getCurrentPageResults();
     }
 
+
     /**
      * Retrieves an Article resource
+     * @SWG\Response(
+     *     response=200,
+     *     description="Retrieves an Article resource",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Article::class, groups={"full"}))
+     *     )
+     * )
+     * @SWG\Tag(name="articles")
+     * @Security(name="Bearer")
+     * 
      * @Rest\Get(
      *     path="/articles/{id}",
      *     name="app_article_show",
@@ -132,6 +132,21 @@ class ArticleController extends GenericController
 
     /**
      * Creates an Article resource
+     * @SWG\Response(
+     *     response=200,
+     *     description="Create an Article resource",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Article::class, groups={"full"}))
+     *     )
+     * )
+     * @SWG\Parameter(
+     *     name="article",
+     *     in="body",
+     *     @Model(type=Article::class)
+     * )
+     * @SWG\Tag(name="articles")
+     * @Security(name="Bearer")
      * @Rest\Post(
      *         path = "/articles",
      *         name = "api_article_create"
@@ -151,6 +166,27 @@ class ArticleController extends GenericController
 
     /**
      * Replaces Article resource
+     * @SWG\Response(
+     *     response=200,
+     *     description="The updated Article resource",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Article::class, groups={"full"}))
+     *     )
+     * )
+	 * @SWG\Parameter(
+	 *      name="id",
+	 * 	    in="path",
+	 * 	    required=true,
+	 * 	    type="integer"
+	 * 	)
+     * @SWG\Parameter(
+     *     name="newArticle",
+     *     in="body",
+     *     @Model(type=Article::class)
+     * )
+     * @SWG\Tag(name="articles")
+     * @Security(name="Bearer")
      * @Rest\Put(
      *     path="/articles/{id}",
      *     name="app_article_update"
@@ -173,7 +209,19 @@ class ArticleController extends GenericController
     // * @ParamConverter("article", class="App\Entity\Article", converter="fos_rest.request_body")
 
     /**
-     * Removes the Article resource
+     * Removes an Article resource
+     * @SWG\Response(
+     *     response=202,
+     *     description="Removes the Article resource"
+     * )
+	 * @SWG\Parameter(
+	 *      name="id",
+	 * 	    in="path",
+	 * 	    required=true,
+	 * 	    type="integer"
+	 * 	)
+     * @SWG\Tag(name="articles")
+     * @Security(name="Bearer")
      * @Rest\Delete(
      *     path="/articles/{id}",
      *     name="app_article_delete"

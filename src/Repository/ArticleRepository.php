@@ -19,6 +19,11 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
  */
 class ArticleRepository extends AbstractRepository
 {
+    public function __construct(RegistryInterface $registry)
+    {
+        parent::__construct($registry, Article::class);
+    }
+    
     public function search($term, $order = 'asc', $limit = 20, $offset = 0)
     {
         $qb = $this

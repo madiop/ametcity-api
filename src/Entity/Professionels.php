@@ -2,13 +2,17 @@
 
 namespace App\Entity;
 
+use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as Serializer;
+use Hateoas\Configuration\Annotation as Hateoas;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ProfessionelsRepository")
  * @ORM\Table(name="professionels")
+ * @Serializer\ExclusionPolicy("all")
  */
 class Professionels
 {
@@ -21,32 +25,46 @@ class Professionels
 
     /**
      * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
+     * @Serializer\Expose
+     * @Serializer\Since("1.0")
      */
     private $tauxHoraire;
 
     /**
      * @ORM\Column(type="boolean", nullable=true)
+     * @Serializer\Expose
+     * @Serializer\Since("1.0")
      */
     private $status;
 
     /**
      * @ORM\Column(type="text", nullable=true)
+     * @Serializer\Expose
+     * @Serializer\Since("1.0")
      */
     private $description;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @Serializer\Expose
+     * @Serializer\Since("1.0")
+     * 
+     * @Assert\NotBlank(message="Le nombre d'année d'expérience ne doit pas être vide")
      */
     private $experience;
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\Competences", mappedBy="professionnels")
+     * @Serializer\Expose
+     * @Serializer\Since("1.0")
      */
     private $competences;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\User", cascade={"persist", "remove"})
      * @ORM\JoinColumn(nullable=false)
+     * @Serializer\Expose
+     * @Serializer\Since("1.0")
      */
     private $user;
 

@@ -35,12 +35,6 @@ class User implements UserInterface
     private $password;
 
     /**
-     * @ORM\Column(name="is_active", type="boolean")
-     * @Serializer\Expose
-     */
-    private $isActive;
-
-    /**
      * @ORM\Column(type="string", length=255, nullable=true)
      * @Serializer\Expose
      */
@@ -121,20 +115,7 @@ class User implements UserInterface
     {
         return $this->id;
     }
-
-    /**
-     * Set isActive
-     *
-     * @param boolean $isActive
-     *
-     * @return User
-     */
-    public function setIsActive($isActive): self
-    {
-        $this->isActive = $isActive;
-
-        return $this;
-    }
+    
     public function getUsername()
     {
         return $this->username;

@@ -3,10 +3,14 @@ namespace App\UserController;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use App\Entity\User;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Nelmio\ApiDocBundle\Annotation\Security;
+use Swagger\Annotations as SWG;
 use FOS\RestBundle\Controller\Annotations as Rest;
+
+use App\Entity\User;
 
 class AuthController extends AbstractController
 {
@@ -14,6 +18,17 @@ class AuthController extends AbstractController
 
     /**
      * User registration
+     * @SWG\Response(
+     *     response=200,
+     *     description="User registration"
+     * )
+     * @SWG\Parameter(
+     *     name="user",
+     *     in="body",
+     *     @Model(type=User::class)
+     * )
+     * @SWG\Tag(name="users")
+     * @Security(name="Bearer")
      * 
      * @Rest\Post(
      *         path = "/register",
@@ -31,7 +46,7 @@ class AuthController extends AbstractController
         $user->setPassword('');
         $user->setPassword($encoder->encodePassword($user, $password));
         $user->setDateInscription(new \DateTime());
-        $user->setIsActive(true);
+        // $user->setIsActive(true);
 
         // var_dump($user);
         // exit;
@@ -39,10 +54,5 @@ class AuthController extends AbstractController
         $em->persist($user);
         $em->flush();
         return new Response(sprintf('User %s successfully created', $user->getUsername()));
-    }
-
-    public function api()
-    {
-        return new Response(sprintf('Logged in as %s', $this->getUser()->getUsername()));
     }
 }
