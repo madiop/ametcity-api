@@ -12,11 +12,39 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
  * @method Specialites[]    findAll()
  * @method Specialites[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class SpecialitesRepository extends ServiceEntityRepository
+class SpecialitesRepository extends AbstractRepository
 {
     public function __construct(RegistryInterface $registry)
     {
         parent::__construct($registry, Specialites::class);
+    }
+
+    public function search($term, $order = 'asc', $limit = 20, $offset = 0)
+    {
+        $qb = $this
+            ->createQueryBuilder('s')
+            ->orderBy('s.libelle', $order)
+        ;
+        
+        if ($term) {
+            $qb
+                ->andWhere('s.libelle LIKE :term')
+                ->setParameter('term', '%'.$term.'%')
+            ;
+        }
+        
+        return $this->paginate($qb, $limit, $offset);
+    }
+
+    public function findOrCreate(Specialites $specialite): ?Specialites
+    {
+        $spec = $this->createQueryBuilder('s')
+            ->andWhere('s.libelle = :val')
+            ->setParameter('val', $specialite->getLibelle())
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+        return is_null($spec) ? $specialite : $spec;
     }
 
     // /**

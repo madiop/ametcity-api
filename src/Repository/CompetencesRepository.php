@@ -47,9 +47,9 @@ class CompetencesRepository extends AbstractRepository
         return is_null($comp) ? $competence : $comp;
     }
 
-    /**
-     * @return Competences[] Returns an array of Competences objects
-     */
+    // /**
+    //  * @return Competences[] Returns an array of Competences objects
+    //  */
     /*
     public function findByExampleField($value)
     {

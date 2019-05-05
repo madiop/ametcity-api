@@ -114,6 +114,12 @@ class ProfessionelsController extends GenericController
      *         @SWG\Items(ref=@Model(type=Professionels::class))
      *     )
      * )
+	 * @SWG\Parameter(
+	 *     name="id",
+	 * 	   in="path",
+	 * 	   required=true,
+	 * 	   type="integer"
+	 * )
      * @SWG\Tag(name="professionels")
      * @Security(name="Bearer")
      *
@@ -281,14 +287,9 @@ class ProfessionelsController extends GenericController
      */
     public function addCompetence(Professionels $professionel, Competences $newCompetence)
     {
-        // echo $professionel->getId();
-        // echo '<br/>';
         $compRepo = $this->getDoctrine()->getRepository(Competences::class);
         $competence = $compRepo->findOrCreate($newCompetence);
-        // echo $competence->getId();
-        // echo '<br/>';
-        // echo $competence->getNom();
-        // exit;
+        
         $professionel->addCompetence($competence);
 
         $this->em->persist($professionel);

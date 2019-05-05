@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Request\ParamFetcherInterface;
 use Symfony\Component\Validator\ConstraintViolationList;
@@ -11,16 +12,15 @@ use Nelmio\ApiDocBundle\Annotation\Model;
 use Nelmio\ApiDocBundle\Annotation\Security;
 use Swagger\Annotations as SWG;
 
-use App\Repository\CompetencesRepository;
-use App\Entity\Competences;
+use App\Repository\SpecialitesRepository;
+use App\Entity\Specialites;
 use App\Validators\Validator;
 
-
-class CompetencesController extends GenericController
+class SpecialitesController extends  GenericController
 {
     private $repository;
 
-    public function __construct(CompetencesRepository $repository, 
+    public function __construct(SpecialitesRepository $repository, 
                                 EntityManagerInterface $em, 
                                 Validator $validator)
     {
@@ -29,13 +29,13 @@ class CompetencesController extends GenericController
     }
 
     /**
-     * Retrieves a collection of Competences resource
+     * Retrieves a collection of Specialites resource
      * @SWG\Response(
      *     response=200,
-     *     description="Retrieves a collection of Competences resource",
+     *     description="Retrieves a collection of Specialites resource",
      *     @SWG\Schema(
      *         type="array",
-     *         @SWG\Items(ref=@Model(type=Competences::class))
+     *         @SWG\Items(ref=@Model(type=Specialites::class))
      *     )
      * )
      * @SWG\Parameter(
@@ -62,12 +62,12 @@ class CompetencesController extends GenericController
      *     description="Page number",
      *     type="integer",
      * )
-     * @SWG\Tag(name="competences")
+     * @SWG\Tag(name="specialites")
      * @Security(name="Bearer")
      *
      * @Rest\Get(
-     *     path="/competences",
-     *     name="app_competence_list"
+     *     path="/specialites",
+     *     name="app_specialite_list"
      * )
      * @Rest\QueryParam(
      *     name="keyword",
@@ -94,7 +94,7 @@ class CompetencesController extends GenericController
      * )
      * @Rest\View(populateDefaultVars=false)
      */
-    public function listCompetencess(ParamFetcherInterface $paramFetcher)//: array
+    public function listSpecialitess(ParamFetcherInterface $paramFetcher)//: array
     {
         $pager = $this->repository->search(
             $paramFetcher->get('keyword'),
@@ -108,13 +108,13 @@ class CompetencesController extends GenericController
 
 
     /**
-     * Retrieves an Competences resource
+     * Retrieves an Specialites resource
      * @SWG\Response(
      *     response=200,
-     *     description="Retrieves an Competences resource",
+     *     description="Retrieves an Specialites resource",
      *     @SWG\Schema(
      *         type="array",
-     *         @SWG\Items(ref=@Model(type=Competences::class))
+     *         @SWG\Items(ref=@Model(type=Specialites::class))
      *     )
      * )
 	 * @SWG\Parameter(
@@ -123,30 +123,30 @@ class CompetencesController extends GenericController
 	 * 	   required=true,
 	 * 	   type="integer"
 	 * )
-     * @SWG\Tag(name="competences")
+     * @SWG\Tag(name="specialites")
      * @Security(name="Bearer")
      * 
      * @Rest\Get(
-     *     path="/competences/{id}",
-     *     name="app_competence_show",
+     *     path="/specialites/{id}",
+     *     name="app_specialite_show",
      *     requirements = {"id"="\d+"}
      * )
      * 
      * @Rest\View(populateDefaultVars=false)
      */
-    public function getCompetences(Competences $competence) : Competences
+    public function getSpecialite(Specialites $specialite) : Specialites
     {
-        return $competence;
+        return $specialite;
     }
 
     /**
-     * Update Competences resource
+     * Update Specialites resource
      * @SWG\Response(
      *     response=200,
-     *     description="The updated Competences resource",
+     *     description="The updated Specialites resource",
      *     @SWG\Schema(
      *         type="array",
-     *         @SWG\Items(ref=@Model(type=Competences::class))
+     *         @SWG\Items(ref=@Model(type=Specialites::class, groups={"full"}))
      *     )
      * )
 	 * @SWG\Parameter(
@@ -156,28 +156,28 @@ class CompetencesController extends GenericController
 	 * 	    type="integer"
 	 * 	)
      * @SWG\Parameter(
-     *     name="newCompetences",
+     *     name="newSpecialites",
      *     in="body",
-     *     @Model(type=Competences::class)
+     *     @Model(type=Specialites::class)
      * )
-     * @SWG\Tag(name="competences")
+     * @SWG\Tag(name="specialites")
      * @Security(name="Bearer")
      * @Rest\Put(
-     *     path="/competences/{id}",
-     *     name="app_competence_update"
+     *     path="/specialites/{id}",
+     *     name="app_specialite_update"
      * )
      * @Rest\View(populateDefaultVars=false)
-     * @ParamConverter("newCompetences", class="App\Entity\Competences", converter="fos_rest.request_body")
+     * @ParamConverter("newSpecialites", class="App\Entity\Specialites", converter="fos_rest.request_body")
      */
-    public function putCompetences(Competences $competence, Competences $newCompetences, ConstraintViolationList $violations): Competences
+    public function putSpecialites(Specialites $specialite, Specialites $newSpecialites, ConstraintViolationList $violations): Specialites
     {
         $this->dataValidator->validate($violations);
 
-        $competence->setNom($newCompetences->getNom());
+        $specialite->setLibelle($newSpecialites->getLibelle());
 
-        $this->em->persist($competence);
+        $this->em->persist($specialite);
         $this->em->flush();
         
-        return $competence;
+        return $specialite;
     }
 }
