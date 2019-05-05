@@ -12,11 +12,28 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
  * @method Competences[]    findAll()
  * @method Competences[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class CompetencesRepository extends ServiceEntityRepository
+class CompetencesRepository extends AbstractRepository
 {
     public function __construct(RegistryInterface $registry)
     {
         parent::__construct($registry, Competences::class);
+    }
+
+    public function search($term, $order = 'asc', $limit = 20, $offset = 0)
+    {
+        $qb = $this
+            ->createQueryBuilder('c')
+            ->orderBy('c.nom', $order)
+        ;
+        
+        if ($term) {
+            $qb
+                ->andWhere('a.nom LIKE :term')
+                ->setParameter('term', '%'.$term.'%')
+            ;
+        }
+        
+        return $this->paginate($qb, $limit, $offset);
     }
 
     public function findOrCreate(Competences $competence): ?Competences
