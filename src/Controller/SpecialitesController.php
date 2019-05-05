@@ -146,7 +146,7 @@ class SpecialitesController extends  GenericController
      *     description="The updated Specialites resource",
      *     @SWG\Schema(
      *         type="array",
-     *         @SWG\Items(ref=@Model(type=Specialites::class, groups={"full"}))
+     *         @SWG\Items(ref=@Model(type=Specialites::class))
      *     )
      * )
 	 * @SWG\Parameter(

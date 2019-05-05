@@ -143,7 +143,7 @@ class ArticleController extends GenericController
      * @SWG\Parameter(
      *     name="article",
      *     in="body",
-     *     @Model(type=Article::class)
+     *     @Model(type=Article::class, groups={"full"})
      * )
      * @SWG\Tag(name="articles")
      * @Security(name="Bearer")
@@ -183,7 +183,7 @@ class ArticleController extends GenericController
      * @SWG\Parameter(
      *     name="newArticle",
      *     in="body",
-     *     @Model(type=Article::class)
+     *     @Model(type=Article::class, groups={"full"})
      * )
      * @SWG\Tag(name="articles")
      * @Security(name="Bearer")
