@@ -5,9 +5,12 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\CompetencesRepository")
+ * @Serializer\ExclusionPolicy("all")
  */
 class Competences
 {
@@ -20,6 +23,10 @@ class Competences
 
     /**
      * @ORM\Column(type="string", length=100, unique=true)
+     * @Serializer\Expose
+     * @Serializer\Since("1.0")
+     * 
+     * @Assert\NotBlank(message="Le nom ne doit pas être vide")
      */
     private $nom;
 

@@ -92,9 +92,15 @@ class Professionels
      */
     private $user;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Specialites", mappedBy="professionels")
+     */
+    private $specialites;
+
     public function __construct()
     {
         $this->competences = new ArrayCollection();
+        $this->specialites = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -189,6 +195,34 @@ class Professionels
     public function setUser(User $user): self
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Specialites[]
+     */
+    public function getSpecialites(): Collection
+    {
+        return $this->specialites;
+    }
+
+    public function addSpecialite(Specialites $specialite): self
+    {
+        if (!$this->specialites->contains($specialite)) {
+            $this->specialites[] = $specialite;
+            $specialite->addProfessionel($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSpecialite(Specialites $specialite): self
+    {
+        if ($this->specialites->contains($specialite)) {
+            $this->specialites->removeElement($specialite);
+            $specialite->removeProfessionel($this);
+        }
 
         return $this;
     }
