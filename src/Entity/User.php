@@ -2,6 +2,8 @@
 namespace App\Entity;
 
 use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use JMS\Serializer\Annotation as Serializer;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -105,10 +107,16 @@ class User implements UserInterface
      */
     private $codePostale;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Devis", mappedBy="client")
+     */
+    private $devis;
+
     public function __construct($username)
     {
         $this->isActive = true;
         $this->username = $username;
+        $this->devis = new ArrayCollection();
     }
 
     /**
@@ -285,6 +293,37 @@ class User implements UserInterface
     public function setCodePostale(?int $codePostale): self
     {
         $this->codePostale = $codePostale;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Devis[]
+     */
+    public function getDevis(): Collection
+    {
+        return $this->devis;
+    }
+
+    public function addDevi(Devis $devi): self
+    {
+        if (!$this->devis->contains($devi)) {
+            $this->devis[] = $devi;
+            $devi->setClient($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDevi(Devis $devi): self
+    {
+        if ($this->devis->contains($devi)) {
+            $this->devis->removeElement($devi);
+            // set the owning side to null (unless already changed)
+            if ($devi->getClient() === $this) {
+                $devi->setClient(null);
+            }
+        }
 
         return $this;
     }

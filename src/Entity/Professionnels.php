@@ -101,10 +101,16 @@ class Professionnels
      */
     private $user;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Prestations", mappedBy="professionnel")
+     */
+    private $prestations;
+
     public function __construct()
     {
         $this->competences = new ArrayCollection();
         $this->specialites = new ArrayCollection();
+        $this->prestations = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -235,6 +241,37 @@ class Professionnels
         if ($this->specialites->contains($specialite)) {
             $this->specialites->removeElement($specialite);
             $specialite->removeProfessionnel($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Prestations[]
+     */
+    public function getPrestations(): Collection
+    {
+        return $this->prestations;
+    }
+
+    public function addPrestation(Prestations $prestation): self
+    {
+        if (!$this->prestations->contains($prestation)) {
+            $this->prestations[] = $prestation;
+            $prestation->setProfessionnel($this);
+        }
+
+        return $this;
+    }
+
+    public function removePrestation(Prestations $prestation): self
+    {
+        if ($this->prestations->contains($prestation)) {
+            $this->prestations->removeElement($prestation);
+            // set the owning side to null (unless already changed)
+            if ($prestation->getProfessionnel() === $this) {
+                $prestation->setProfessionnel(null);
+            }
         }
 
         return $this;

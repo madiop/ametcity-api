@@ -81,6 +81,16 @@ class Entreprises
      */
     private $numeroTva;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Prestations", mappedBy="entreprises")
+     */
+    private $prestations;
+
+    public function __construct()
+    {
+        $this->prestations = new ArrayCollection();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -178,6 +188,37 @@ class Entreprises
     public function setNumeroTva(?string $numeroTva): self
     {
         $this->numeroTva = $numeroTva;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Prestations[]
+     */
+    public function getPrestations(): Collection
+    {
+        return $this->prestations;
+    }
+
+    public function addPrestation(Prestations $prestation): self
+    {
+        if (!$this->prestations->contains($prestation)) {
+            $this->prestations[] = $prestation;
+            $prestation->setEntreprises($this);
+        }
+
+        return $this;
+    }
+
+    public function removePrestation(Prestations $prestation): self
+    {
+        if ($this->prestations->contains($prestation)) {
+            $this->prestations->removeElement($prestation);
+            // set the owning side to null (unless already changed)
+            if ($prestation->getEntreprises() === $this) {
+                $prestation->setEntreprises(null);
+            }
+        }
 
         return $this;
     }

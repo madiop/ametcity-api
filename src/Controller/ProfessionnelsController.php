@@ -165,10 +165,6 @@ class ProfessionnelsController extends GenericController
     {
         $this->dataValidator->validate($violations);
 
-        // $user = $professionnel->getUser();
-        // var_dump($professionnel);
-        // exit;
-
         $this->em->persist($professionnel);
         $this->em->flush();
 
