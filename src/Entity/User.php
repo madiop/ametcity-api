@@ -100,6 +100,11 @@ class User implements UserInterface
      */
     private $pays;
 
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $codePostale;
+
     public function __construct($username)
     {
         $this->isActive = true;
@@ -268,6 +273,18 @@ class User implements UserInterface
     public function setPays(?string $pays): self
     {
         $this->pays = $pays;
+
+        return $this;
+    }
+
+    public function getCodePostale(): ?int
+    {
+        return $this->codePostale;
+    }
+
+    public function setCodePostale(?int $codePostale): self
+    {
+        $this->codePostale = $codePostale;
 
         return $this;
     }
