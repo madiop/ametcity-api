@@ -47,7 +47,7 @@ class Competences
     private $nom;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Professionels", inversedBy="competences")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Professionnels", inversedBy="competences")
      */
     private $professionnels;
 
@@ -74,14 +74,14 @@ class Competences
     }
 
     /**
-     * @return Collection|Professionels[]
+     * @return Collection|Professionnels[]
      */
     public function getProfessionnels(): Collection
     {
         return $this->professionnels;
     }
 
-    public function addProfessionnel(Professionels $professionnel): self
+    public function addProfessionnel(Professionnels $professionnel): self
     {
         if(is_null($this->professionnels)){
             $this->professionnels = new ArrayCollection();
@@ -93,7 +93,7 @@ class Competences
         return $this;
     }
 
-    public function removeProfessionnel(Professionels $professionnel): self
+    public function removeProfessionnel(Professionnels $professionnel): self
     {
         if(is_null($this->professionnels)){
             $this->professionnels = new ArrayCollection();

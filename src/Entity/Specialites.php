@@ -47,13 +47,13 @@ class Specialites
     private $libelle;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Professionels", inversedBy="specialites")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Professionnels", inversedBy="specialites")
      */
-    private $professionels;
+    private $professionnels;
 
     public function __construct()
     {
-        $this->professionels = new ArrayCollection();
+        $this->professionnels = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -74,32 +74,32 @@ class Specialites
     }
 
     /**
-     * @return Collection|Professionels[]
+     * @return Collection|Professionnels[]
      */
-    public function getProfessionels(): Collection
+    public function getProfessionnels(): Collection
     {
-        return $this->professionels;
+        return $this->professionnels;
     }
 
-    public function addProfessionel(Professionels $professionel): self
+    public function addProfessionnel(Professionnels $professionnel): self
     {
-        if(is_null($this->professionels)){
-            $this->professionels = new ArrayCollection();
+        if(is_null($this->professionnels)){
+            $this->professionnels = new ArrayCollection();
         }
-        if (!$this->professionels->contains($professionel)) {
-            $this->professionels[] = $professionel;
+        if (!$this->professionnels->contains($professionnel)) {
+            $this->professionnels[] = $professionnel;
         }
 
         return $this;
     }
 
-    public function removeProfessionel(Professionels $professionel): self
+    public function removeProfessionnel(Professionnels $professionnel): self
     {
-        if(is_null($this->professionels)){
-            $this->professionels = new ArrayCollection();
+        if(is_null($this->professionnels)){
+            $this->professionnels = new ArrayCollection();
         }
-        if ($this->professionels->contains($professionel)) {
-            $this->professionels->removeElement($professionel);
+        if ($this->professionnels->contains($professionnel)) {
+            $this->professionnels->removeElement($professionnel);
         }
 
         return $this;

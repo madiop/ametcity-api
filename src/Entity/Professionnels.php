@@ -10,13 +10,13 @@ use JMS\Serializer\Annotation as Serializer;
 use Hateoas\Configuration\Annotation as Hateoas;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\ProfessionelsRepository")
- * @ORM\Table(name="professionels")
+ * @ORM\Entity(repositoryClass="App\Repository\ProfessionnelsRepository")
+ * @ORM\Table(name="professionnels")
  * 
  * @Hateoas\Relation(
  *     "self",
  *     href = @Hateoas\Route(
- *         "app_professionel_show",
+ *         "app_professionnel_show",
  *         parameters = { "id" = "expr(object.getId())" }
  *     )
  * )
@@ -30,7 +30,7 @@ use Hateoas\Configuration\Annotation as Hateoas;
  * @Hateoas\Relation(
  *      "delete",
  *      href = @Hateoas\Route(
- *          "app_professionel_delete",
+ *          "app_professionnel_delete",
  *          parameters = { "id" = "expr(object.getId())" }
  *      )
  * )
@@ -40,7 +40,7 @@ use Hateoas\Configuration\Annotation as Hateoas;
  * )
  * @Serializer\ExclusionPolicy("all")
  */
-class Professionels
+class Professionnels
 {
     /**
      * @ORM\Id()
@@ -87,15 +87,17 @@ class Professionels
     private $competences;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Specialites", mappedBy="professionels", cascade={"persist"})
+     * @ORM\ManyToMany(targetEntity="App\Entity\Specialites", mappedBy="professionnels", cascade={"persist"})
      * @Serializer\Expose
      * @Serializer\Since("1.0")
      */
     private $specialites;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\User", cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity="App\Entity\User", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
+     * @Serializer\Expose
+     * @Serializer\Since("1.0")
      */
     private $user;
 
@@ -219,7 +221,7 @@ class Professionels
         }
         if (!$this->specialites->contains($specialite)) {
             $this->specialites[] = $specialite;
-            $specialite->addProfessionel($this);
+            $specialite->addProfessionnel($this);
         }
 
         return $this;
@@ -232,7 +234,7 @@ class Professionels
         }
         if ($this->specialites->contains($specialite)) {
             $this->specialites->removeElement($specialite);
-            $specialite->removeProfessionel($this);
+            $specialite->removeProfessionnel($this);
         }
 
         return $this;
