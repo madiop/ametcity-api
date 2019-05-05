@@ -12,6 +12,32 @@ use Hateoas\Configuration\Annotation as Hateoas;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ProfessionelsRepository")
  * @ORM\Table(name="professionels")
+ * 
+ * @Hateoas\Relation(
+ *     "self",
+ *     href = @Hateoas\Route(
+ *         "app_professionel_show",
+ *         parameters = { "id" = "expr(object.getId())" }
+ *     )
+ * )
+ * @Hateoas\Relation(
+ *      "modify",
+ *      href = @Hateoas\Route(
+ *          "app_professionnel_update",
+ *          parameters = { "id" = "expr(object.getId())" }
+ *      )
+ * )
+ * @Hateoas\Relation(
+ *      "delete",
+ *      href = @Hateoas\Route(
+ *          "app_professionel_delete",
+ *          parameters = { "id" = "expr(object.getId())" }
+ *      )
+ * )
+ * @Hateoas\Relation(
+ *     "user",
+ *     embedded = @Hateoas\Embedded("expr(object.getUser())")
+ * )
  * @Serializer\ExclusionPolicy("all")
  */
 class Professionels
@@ -28,7 +54,7 @@ class Professionels
      * @Serializer\Expose
      * @Serializer\Since("1.0")
      */
-    private $tauxHoraire;
+    private $tjm;
 
     /**
      * @ORM\Column(type="boolean", nullable=true)
@@ -54,7 +80,7 @@ class Professionels
     private $experience;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Competences", mappedBy="professionnels")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Competences", mappedBy="professionnels", cascade={"persist"})
      * @Serializer\Expose
      * @Serializer\Since("1.0")
      */
@@ -63,8 +89,6 @@ class Professionels
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\User", cascade={"persist", "remove"})
      * @ORM\JoinColumn(nullable=false)
-     * @Serializer\Expose
-     * @Serializer\Since("1.0")
      */
     private $user;
 
@@ -78,14 +102,14 @@ class Professionels
         return $this->id;
     }
 
-    public function getTauxHoraire()
+    public function getTjm()
     {
-        return $this->tauxHoraire;
+        return $this->tjm;
     }
 
-    public function setTauxHoraire($tauxHoraire): self
+    public function setTjm($tjm): self
     {
-        $this->tauxHoraire = $tauxHoraire;
+        $this->tjm = $tjm;
 
         return $this;
     }
@@ -136,6 +160,9 @@ class Professionels
 
     public function addCompetence(Competences $competence): self
     {
+        if(is_null($this->competences)){
+            $this->competences = new ArrayCollection();
+        }
         if (!$this->competences->contains($competence)) {
             $this->competences[] = $competence;
             $competence->addProfessionnel($this);

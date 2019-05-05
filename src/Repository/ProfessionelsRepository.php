@@ -35,6 +35,23 @@ class ProfessionelsRepository extends AbstractRepository
         return $this->paginate($qb, $limit, $offset);
     }
 
+    public function update(Professionels $professionel, Professionels $newProfessionel){
+
+        if(!is_null($newProfessionel->getTjm())){
+            $professionel->setTjm($newProfessionel->getTjm());
+        }
+        if(!is_null($newProfessionel->getStatus())){
+            $professionel->setStatus($newProfessionel->getStatus());
+        }
+        if(!is_null($newProfessionel->getDescription())){
+            $professionel->setDescription($newProfessionel->getDescription());
+        }
+        if(!is_null($newProfessionel->getExperience())){
+            $professionel->setExperience($newProfessionel->getExperience());
+        }
+        return $professionel;
+    }
+
     // /**
     //  * @return Professionel[] Returns an array of Professionel objects
     //  */

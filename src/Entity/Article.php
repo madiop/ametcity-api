@@ -25,7 +25,7 @@ use Hateoas\Configuration\Annotation as Hateoas;
  * @Hateoas\Relation(
  *      "delete",
  *      href = @Hateoas\Route(
- *          "app_article_update",
+ *          "app_article_delete",
  *          parameters = { "id" = "expr(object.getId())" }
  *      )
  * )

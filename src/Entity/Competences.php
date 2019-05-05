@@ -19,7 +19,7 @@ class Competences
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=100)
+     * @ORM\Column(type="string", length=100, unique=true)
      */
     private $nom;
 
@@ -51,15 +51,18 @@ class Competences
     }
 
     /**
-     * @return Collection|Professionel[]
+     * @return Collection|Professionels[]
      */
     public function getProfessionnels(): Collection
     {
         return $this->professionnels;
     }
 
-    public function addProfessionnel(Professionel $professionnel): self
+    public function addProfessionnel(Professionels $professionnel): self
     {
+        if(is_null($this->professionnels)){
+            $this->professionnels = new ArrayCollection();
+        }
         if (!$this->professionnels->contains($professionnel)) {
             $this->professionnels[] = $professionnel;
         }
@@ -67,7 +70,7 @@ class Competences
         return $this;
     }
 
-    public function removeProfessionnel(Professionel $professionnel): self
+    public function removeProfessionnel(Professionels $professionnel): self
     {
         if ($this->professionnels->contains($professionnel)) {
             $this->professionnels->removeElement($professionnel);

@@ -13,6 +13,7 @@ use Swagger\Annotations as SWG;
 
 use App\Repository\ProfessionelsRepository;
 use App\Entity\Professionels;
+use App\Entity\Competences;
 use App\Validators\Validator;
 
 class ProfessionelsController extends GenericController
@@ -26,9 +27,8 @@ class ProfessionelsController extends GenericController
         parent::__construct($em, $validator);
         $this->repository = $repository;
     }
-    
 
-    // *     requirements="[a-zA-Z0-9]",
+    
     /**
      * Retrieves a collection of professionels resource
      * @SWG\Response(
@@ -39,30 +39,30 @@ class ProfessionelsController extends GenericController
      *         @SWG\Items(ref=@Model(type=Professionels::class))
      *     )
      * )
-     *     @SWG\Parameter(
-     *         name="keyword",
-     *         in="query",
-     *         description="Sort criterion",
-     *         type="string",
-     *     )
-     *     @SWG\Parameter(
-     *         name="order",
-     *         in="query",
-     *         description="Order criterion",
-     *         type="string",
-     *     )
-     *     @SWG\Parameter(
-     *         name="limit",
-     *         in="query",
-     *         description="Page number",
-     *         type="integer",
-     *     )
-     *     @SWG\Parameter(
-     *         name="offset",
-     *         in="query",
-     *         description="Page number",
-     *         type="integer",
-     *     )
+     * @SWG\Parameter(
+     *     name="keyword",
+     *     in="query",
+     *     description="Sort criterion",
+     *     type="string",
+     * )
+     * @SWG\Parameter(
+     *     name="order",
+     *     in="query",
+     *     description="Order criterion",
+     *     type="string",
+     * )
+     * @SWG\Parameter(
+     *     name="limit",
+     *     in="query",
+     *     description="Page number",
+     *     type="integer",
+     * )
+     * @SWG\Parameter(
+     *     name="offset",
+     *     in="query",
+     *     description="Page number",
+     *     type="integer",
+     * )
      * @SWG\Tag(name="professionels")
      * @Security(name="Bearer")
      *
@@ -116,6 +116,7 @@ class ProfessionelsController extends GenericController
      * )
      * @SWG\Tag(name="professionels")
      * @Security(name="Bearer")
+     *
      * 
      * @Rest\Get(
      *     path="/professionels/{id}",
@@ -145,6 +146,7 @@ class ProfessionelsController extends GenericController
      * )
      * @SWG\Tag(name="professionels")
      * @Security(name="Bearer")
+     *
      * @Rest\Post(
      *         path = "/professionels",
      *         name = "api_professionel_create"
@@ -185,7 +187,8 @@ class ProfessionelsController extends GenericController
      * )
      * @SWG\Tag(name="professionels")
      * @Security(name="Bearer")
-     * 
+     *
+     *   
      * @Rest\Put(
      *     path="/professionels/{id}",
      *     name="app_professionnel_update"
@@ -193,23 +196,24 @@ class ProfessionelsController extends GenericController
      * @Rest\View(populateDefaultVars=false)
      * @ParamConverter("newProfessionel", class="App\Entity\Professionels", converter="fos_rest.request_body")
      */
-    public function putProfessionnel(Professionels $professionels, Professionels $newProfessionel, ConstraintViolationList $violations): Professionels
+    public function putProfessionnel(Professionels $professionel, Professionels $newProfessionel, ConstraintViolationList $violations): Professionels
     {
-        // $this->dataValidator->validate($violations);
-        var_dump($professionels);
-        var_dump($newProfessionel);
-        exit;
-
-
-        // $professionels->setTauxHoraire($newProfessionel->getTauxHoraire());
-        // $professionels->setStatus($newProfessionel->getStatus());
-        // $professionels->setDescription($newProfessionel->getDescription());
-        // $professionels->setExperience($newProfessionel->getExperience());
-
-        // $this->em->persist($professionels);
-        // $this->em->flush();
+        $this->dataValidator->validate($violations);
         
-        return $professionels;
+        $compRepo = $this->getDoctrine()->getRepository(Competences::class);
+        foreach($newProfessionel->getCompetences() as $competence){
+            $myComp = $compRepo->findOrCreate($competence);
+            $professionel->addCompetence($myComp);
+        }
+
+        $professionel = $this->repository->update($professionel, $newProfessionel);
+        // var_dump($newProfessionel->getCompetences());
+        // exit;
+
+        $this->em->persist($professionel);
+        $this->em->flush();
+        
+        return $professionel;
     }
 
     /**
@@ -238,9 +242,58 @@ class ProfessionelsController extends GenericController
      */
     public function deleteProfessionel(Professionels $professionel)
     {
-        // $em = $this->getDoctrine()->getManager();
-
         $this->em->remove($professionel);
         $this->em->flush();
+    }
+
+    /**
+     * Add a Competences resource to a Professionels resource
+     * @SWG\Response(
+     *     response=200,
+     *     description="The added Competences resource",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Competences::class))
+     *     )
+     * )
+	 * @SWG\Parameter(
+	 *      name="id",
+	 * 	    in="path",
+	 * 	    required=true,
+	 * 	    type="integer"
+	 * 	)
+     * @SWG\Parameter(
+     *     name="newCompetence",
+     *     in="body",
+     *     description="Competences Resource to add",
+     *     @Model(type=Competences::class)
+     * )
+     * @SWG\Tag(name="professionels")
+     * @Security(name="Bearer")
+     *
+     *   
+     * @Rest\Put(
+     *     path="/professionels/{id}/competence",
+     *     name="app_professionnel_add_competence"
+     * )
+     * @Rest\View(populateDefaultVars=false)
+     * @ParamConverter("newCompetence", class="App\Entity\Competences", converter="fos_rest.request_body")
+     */
+    public function addCompetence(Professionels $professionel, Competences $newCompetence)
+    {
+        // echo $professionel->getId();
+        // echo '<br/>';
+        $compRepo = $this->getDoctrine()->getRepository(Competences::class);
+        $competence = $compRepo->findOrCreate($newCompetence);
+        // echo $competence->getId();
+        // echo '<br/>';
+        // echo $competence->getNom();
+        // exit;
+        $professionel->addCompetence($competence);
+
+        $this->em->persist($professionel);
+        $this->em->flush();
+        
+        return $competence;
     }
 }

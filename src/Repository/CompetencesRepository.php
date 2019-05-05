@@ -19,9 +19,20 @@ class CompetencesRepository extends ServiceEntityRepository
         parent::__construct($registry, Competences::class);
     }
 
-    // /**
-    //  * @return Competences[] Returns an array of Competences objects
-    //  */
+    public function findOrCreate(Competences $competence): ?Competences
+    {
+        $comp = $this->createQueryBuilder('c')
+            ->andWhere('c.nom = :val')
+            ->setParameter('val', $competence->getNom())
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+        return is_null($comp) ? $competence : $comp;
+    }
+
+    /**
+     * @return Competences[] Returns an array of Competences objects
+     */
     /*
     public function findByExampleField($value)
     {
