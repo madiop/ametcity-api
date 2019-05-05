@@ -87,15 +87,17 @@ class Professionels
     private $competences;
 
     /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Specialites", mappedBy="professionels", cascade={"persist"})
+     * @Serializer\Expose
+     * @Serializer\Since("1.0")
+     */
+    private $specialites;
+
+    /**
      * @ORM\OneToOne(targetEntity="App\Entity\User", cascade={"persist", "remove"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $user;
-
-    /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Specialites", mappedBy="professionels")
-     */
-    private $specialites;
 
     public function __construct()
     {
@@ -179,6 +181,9 @@ class Professionels
 
     public function removeCompetence(Competences $competence): self
     {
+        if(is_null($this->competences)){
+            $this->competences = new ArrayCollection();
+        }
         if ($this->competences->contains($competence)) {
             $this->competences->removeElement($competence);
             $competence->removeProfessionnel($this);
@@ -209,6 +214,9 @@ class Professionels
 
     public function addSpecialite(Specialites $specialite): self
     {
+        if(is_null($this->specialites)){
+            $this->specialites = new ArrayCollection();
+        }
         if (!$this->specialites->contains($specialite)) {
             $this->specialites[] = $specialite;
             $specialite->addProfessionel($this);
@@ -219,6 +227,9 @@ class Professionels
 
     public function removeSpecialite(Specialites $specialite): self
     {
+        if(is_null($this->specialites)){
+            $this->specialites = new ArrayCollection();
+        }
         if ($this->specialites->contains($specialite)) {
             $this->specialites->removeElement($specialite);
             $specialite->removeProfessionel($this);

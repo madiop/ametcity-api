@@ -7,9 +7,25 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation as Serializer;
+use Hateoas\Configuration\Annotation as Hateoas;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\SpecialitesRepository")
+ * 
+ * @Hateoas\Relation(
+ *     "self",
+ *     href = @Hateoas\Route(
+ *         "app_specialite_show",
+ *         parameters = { "id" = "expr(object.getId())" }
+ *     )
+ * )
+ * @Hateoas\Relation(
+ *      "modify",
+ *      href = @Hateoas\Route(
+ *          "app_specialite_update",
+ *          parameters = { "id" = "expr(object.getId())" }
+ *      )
+ * )
  * @Serializer\ExclusionPolicy("all")
  */
 class Specialites
@@ -67,6 +83,9 @@ class Specialites
 
     public function addProfessionel(Professionels $professionel): self
     {
+        if(is_null($this->professionels)){
+            $this->professionels = new ArrayCollection();
+        }
         if (!$this->professionels->contains($professionel)) {
             $this->professionels[] = $professionel;
         }
@@ -76,6 +95,9 @@ class Specialites
 
     public function removeProfessionel(Professionels $professionel): self
     {
+        if(is_null($this->professionels)){
+            $this->professionels = new ArrayCollection();
+        }
         if ($this->professionels->contains($professionel)) {
             $this->professionels->removeElement($professionel);
         }

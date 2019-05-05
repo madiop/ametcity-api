@@ -7,9 +7,25 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation as Serializer;
+use Hateoas\Configuration\Annotation as Hateoas;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\CompetencesRepository")
+ * 
+ * @Hateoas\Relation(
+ *     "self",
+ *     href = @Hateoas\Route(
+ *         "app_competence_show",
+ *         parameters = { "id" = "expr(object.getId())" }
+ *     )
+ * )
+ * @Hateoas\Relation(
+ *      "modify",
+ *      href = @Hateoas\Route(
+ *          "app_competence_update",
+ *          parameters = { "id" = "expr(object.getId())" }
+ *      )
+ * )
  * @Serializer\ExclusionPolicy("all")
  */
 class Competences
@@ -79,6 +95,9 @@ class Competences
 
     public function removeProfessionnel(Professionels $professionnel): self
     {
+        if(is_null($this->professionnels)){
+            $this->professionnels = new ArrayCollection();
+        }
         if ($this->professionnels->contains($professionnel)) {
             $this->professionnels->removeElement($professionnel);
         }

@@ -14,6 +14,7 @@ use Swagger\Annotations as SWG;
 use App\Repository\ProfessionelsRepository;
 use App\Entity\Professionels;
 use App\Entity\Competences;
+use App\Entity\Specialites;
 use App\Validators\Validator;
 
 class ProfessionelsController extends GenericController
@@ -207,15 +208,23 @@ class ProfessionelsController extends GenericController
         $this->dataValidator->validate($violations);
         
         $compRepo = $this->getDoctrine()->getRepository(Competences::class);
-        foreach($newProfessionel->getCompetences() as $competence){
-            $myComp = $compRepo->findOrCreate($competence);
-            $professionel->addCompetence($myComp);
+        if(!is_null($newProfessionel->getCompetences())){
+            foreach($newProfessionel->getCompetences() as $competence){
+                $myComp = $compRepo->findOrCreate($competence);
+                $professionel->addCompetence($myComp);
+            }
+        }
+        
+        $specRepo = $this->getDoctrine()->getRepository(Specialites::class);
+        if(!is_null($newProfessionel->getSpecialites())){
+            foreach($newProfessionel->getSpecialites() as $specialite){
+                $mySpec = $specRepo->findOrCreate($specialite);
+                $professionel->addSpecialite($mySpec);
+            }
         }
 
         $professionel = $this->repository->update($professionel, $newProfessionel);
-        // var_dump($newProfessionel->getCompetences());
-        // exit;
-
+        
         $this->em->persist($professionel);
         $this->em->flush();
         
@@ -296,5 +305,52 @@ class ProfessionelsController extends GenericController
         $this->em->flush();
         
         return $competence;
+    }
+
+    /**
+     * Add a Specialites resource to a Professionels resource
+     * @SWG\Response(
+     *     response=200,
+     *     description="The added Specialites resource",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Specialites::class))
+     *     )
+     * )
+	 * @SWG\Parameter(
+	 *     name="id",
+	 * 	   in="path",
+	 * 	   required=true,
+     *     description="Entity id to update",
+	 * 	   type="integer"
+	 * )
+     * @SWG\Parameter(
+     *     name="newSpecialite",
+     *     in="body",
+     *     description="Specialites Resource to add",
+     *     @Model(type=Specialites::class)
+     * )
+     * @SWG\Tag(name="professionels")
+     * @Security(name="Bearer")
+     *
+     *   
+     * @Rest\Put(
+     *     path="/professionels/{id}/specialite",
+     *     name="app_professionnel_add_specialite"
+     * )
+     * @Rest\View(populateDefaultVars=false)
+     * @ParamConverter("newSpecialite", class="App\Entity\Specialites", converter="fos_rest.request_body")
+     */
+    public function addSpecialite(Professionels $professionel, Specialites $newSpecialite)
+    {
+        $specRepo = $this->getDoctrine()->getRepository(Specialites::class);
+        $specialite = $specRepo->findOrCreate($newSpecialite);
+        
+        $professionel->addSpecialite($specialite);
+
+        $this->em->persist($professionel);
+        $this->em->flush();
+        
+        return $specialite;
     }
 }
