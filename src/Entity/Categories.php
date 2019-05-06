@@ -10,6 +10,14 @@ use Doctrine\ORM\Mapping as ORM;
 use Hateoas\Configuration\Annotation as Hateoas;
 
 /**
+ * 
+ * @Hateoas\Relation(
+ *     "self",
+ *     href = @Hateoas\Route(
+ *         "app_categorie_show",
+ *         parameters = { "id" = "expr(object.getId())" }
+ *     )
+ * )
  * @ORM\Entity(repositoryClass="App\Repository\CategoriesRepository")
  * @Serializer\ExclusionPolicy("all")
  */
@@ -19,6 +27,11 @@ class Categories
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * 
+     * @Serializer\Expose
+     * @Serializer\Since("1.0")
+     * 
+     * @Assert\NotBlank(message="Le nom ne doit pas être vide")
      */
     private $id;
 

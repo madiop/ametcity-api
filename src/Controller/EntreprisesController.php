@@ -20,13 +20,11 @@ class EntreprisesController extends GenericController
 {
     private $repository;
 
-    public function __construct(//EntreprisesRepository $repository, 
-                                EntityManagerInterface $em, 
+    public function __construct(EntityManagerInterface $em, 
                                 Validator $validator)
     {
         parent::__construct($em, $validator);
         $this->repository = $em->getRepository(Entreprises::class);
-        // $this->repository = $repository;
     }
 
     

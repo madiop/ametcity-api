@@ -11,30 +11,32 @@ use Nelmio\ApiDocBundle\Annotation\Model;
 use Nelmio\ApiDocBundle\Annotation\Security;
 use Swagger\Annotations as SWG;
 
-use App\Repository\ArticleRepository;
-use App\Entity\Article;
+use App\Repository\ProduitsRepository;
+use App\Entity\Produits;
+use App\Entity\Competences;
+use App\Entity\Specialites;
 use App\Validators\Validator;
 
-class ArticleController extends GenericController
-{   
+class ProduitsController extends GenericController
+{
     private $repository;
 
     public function __construct(EntityManagerInterface $em, 
                                 Validator $validator)
     {
         parent::__construct($em, $validator);
-        $this->repository = $em->getRepository(Article::class);
+        $this->repository = $em->getRepository(Produits::class);
     }
 
-    // *     requirements="[a-zA-Z0-9]",
+    
     /**
-     * Retrieves a collection of Article resource
+     * Retrieves a collection of produits resource
      * @SWG\Response(
      *     response=200,
-     *     description="Retrieves a collection of Article resource",
+     *     description="Retrieves a collection of produit resource",
      *     @SWG\Schema(
      *         type="array",
-     *         @SWG\Items(ref=@Model(type=Article::class, groups={"full"}))
+     *         @SWG\Items(ref=@Model(type=Produits::class))
      *     )
      * )
      * @SWG\Parameter(
@@ -61,10 +63,10 @@ class ArticleController extends GenericController
      *     description="Page number",
      *     type="integer",
      * )
-     * @SWG\Tag(name="articles")
+     * @SWG\Tag(name="produits")
      * @Security(name="Bearer")
      *
-     * @Rest\Get("/articles")
+     * @Rest\Get("/produits")
      * @Rest\QueryParam(
      *     name="keyword",
      *     nullable=true,
@@ -90,7 +92,7 @@ class ArticleController extends GenericController
      * )
      * @Rest\View(populateDefaultVars=false)
      */
-    public function listArticles(ParamFetcherInterface $paramFetcher)//: array
+    public function listProduits(ParamFetcherInterface $paramFetcher)//: array
     {
         $pager = $this->repository->search(
             $paramFetcher->get('keyword'),
@@ -101,76 +103,83 @@ class ArticleController extends GenericController
         
         return $pager->getCurrentPageResults();
     }
-
-
+    
     /**
-     * Retrieves an Article resource
+     * Retrieves an Produit resource
      * @SWG\Response(
      *     response=200,
-     *     description="Retrieves an Article resource",
+     *     description="Retrieves a Produit resource",
      *     @SWG\Schema(
      *         type="array",
-     *         @SWG\Items(ref=@Model(type=Article::class, groups={"full"}))
+     *         @SWG\Items(ref=@Model(type=Produits::class))
      *     )
      * )
-     * @SWG\Tag(name="articles")
+	 * @SWG\Parameter(
+	 *     name="id",
+	 * 	   in="path",
+	 * 	   required=true,
+	 * 	   type="integer"
+	 * )
+     * @SWG\Tag(name="produits")
      * @Security(name="Bearer")
+     *
      * 
      * @Rest\Get(
-     *     path="/articles/{id}",
-     *     name="app_article_show",
+     *     path="/produits/{id}",
+     *     name="app_produit_show",
      *     requirements = {"id"="\d+"}
      * )
      * 
      * @Rest\View(populateDefaultVars=false)
      */
-    public function getArticle(Article $article) : Article
+    public function getProduit(Produits $produit) : Produits
     {
-        return $article;
+        return $produit;
     }
 
     /**
-     * Creates an Article resource
+     * Creates an Produits resource
+     * 
      * @SWG\Response(
      *     response=200,
-     *     description="Create an Article resource",
-     *     @SWG\Schema(
-     *         type="array",
-     *         @SWG\Items(ref=@Model(type=Article::class, groups={"full"}))
-     *     )
+     *     description="The created Produit resource",
+     *     @Model(type=Produits::class)
      * )
      * @SWG\Parameter(
-     *     name="article",
+     *     name="produit",
      *     in="body",
-     *     @Model(type=Article::class, groups={"full"})
+     *     @Model(type=Produits::class)
      * )
-     * @SWG\Tag(name="articles")
+     * @SWG\Tag(name="produits")
      * @Security(name="Bearer")
+     *
      * @Rest\Post(
-     *         path = "/articles",
-     *         name = "api_article_create"
+     *         path = "/produits",
+     *         name = "api_produit_create"
      * )
      * @Rest\View(populateDefaultVars=false, StatusCode = 201)
-     * @ParamConverter("article", class="App\Entity\Article", converter="fos_rest.request_body")
+     * @ParamConverter("produit", class="App\Entity\Produits", converter="fos_rest.request_body")
      */
-    public function createArticle(Article $article, ConstraintViolationList $violations): Article
+    public function createProduit(Produits $produit, ConstraintViolationList $violations): Produits
     {
+        var_dump($produit);
+        exit;
         $this->dataValidator->validate($violations);
 
-        $this->em->persist($article);
+        $this->em->persist($produit);
         $this->em->flush();
 
-        return $article;
+        return $produit;
     }
 
     /**
-     * Replaces Article resource
+     * Replaces Produit resource
      * @SWG\Response(
      *     response=200,
-     *     description="The updated Article resource",
+     *     description="The updated Produit resource",
      *     @SWG\Schema(
      *         type="array",
-     *         @SWG\Items(ref=@Model(type=Article::class, groups={"full"}))
+     *         @SWG\Items(ref=@Model(type=Produits::class))
      *     )
      * )
 	 * @SWG\Parameter(
@@ -180,38 +189,54 @@ class ArticleController extends GenericController
 	 * 	    type="integer"
 	 * 	)
      * @SWG\Parameter(
-     *     name="newArticle",
+     *     name="newProduit",
      *     in="body",
-     *     @Model(type=Article::class, groups={"full"})
+     *     @Model(type=Produits::class)
      * )
-     * @SWG\Tag(name="articles")
+     * @SWG\Tag(name="produits")
      * @Security(name="Bearer")
+     *
+     *   
      * @Rest\Put(
-     *     path="/articles/{id}",
-     *     name="app_article_update"
+     *     path="/produits/{id}",
+     *     name="app_produit_update"
      * )
      * @Rest\View(populateDefaultVars=false)
-     * @ParamConverter("newArticle", class="App\Entity\Article", converter="fos_rest.request_body")
+     * @ParamConverter("newProduit", class="App\Entity\Produits", converter="fos_rest.request_body")
      */
-    public function putArticle(Article $article, Article $newArticle, ConstraintViolationList $violations): Article
+    public function putProduit(Produits $produit, Produits $newProduit, ConstraintViolationList $violations): Produits
     {
         $this->dataValidator->validate($violations);
+        
+        $compRepo = $this->getDoctrine()->getRepository(Competences::class);
+        if(!is_null($newProduit->getCompetences())){
+            foreach($newProduit->getCompetences() as $competence){
+                $myComp = $compRepo->findOrCreate($competence);
+                $produit->addCompetence($myComp);
+            }
+        }
+        
+        $specRepo = $this->getDoctrine()->getRepository(Specialites::class);
+        if(!is_null($newProduit->getSpecialites())){
+            foreach($newProduit->getSpecialites() as $specialite){
+                $mySpec = $specRepo->findOrCreate($specialite);
+                $produit->addSpecialite($mySpec);
+            }
+        }
 
-        $article->setTitle($newArticle->getTitle());
-        $article->setContent($newArticle->getContent());
-
-        $this->em->persist($article);
+        $produit = $this->repository->update($produit, $newProduit);
+        
+        $this->em->persist($produit);
         $this->em->flush();
         
-        return $article;
+        return $produit;
     }
-    // * @ParamConverter("article", class="App\Entity\Article", converter="fos_rest.request_body")
 
     /**
-     * Removes an Article resource
+     * Removes a Produits resource
      * @SWG\Response(
      *     response=202,
-     *     description="Removes the Article resource"
+     *     description="Removes a produit resource"
      * )
 	 * @SWG\Parameter(
 	 *      name="id",
@@ -219,11 +244,11 @@ class ArticleController extends GenericController
 	 * 	    required=true,
 	 * 	    type="integer"
 	 * 	)
-     * @SWG\Tag(name="articles")
+     * @SWG\Tag(name="produits")
      * @Security(name="Bearer")
      * @Rest\Delete(
-     *     path="/articles/{id}",
-     *     name="app_article_delete"
+     *     path="/produits/{id}",
+     *     name="app_produit_delete"
      * )
      * 
      * @Rest\View(
@@ -231,11 +256,9 @@ class ArticleController extends GenericController
      *      StatusCode = 202
      * )
      */
-    public function deleteArticle(Article $article)
+    public function deleteProduit(Produits $produit)
     {
-        // $em = $this->getDoctrine()->getManager();
-
-        $this->em->remove($article);
+        $this->em->remove($produit);
         $this->em->flush();
     }
 }

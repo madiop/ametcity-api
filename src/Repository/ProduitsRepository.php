@@ -12,11 +12,28 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
  * @method Produits[]    findAll()
  * @method Produits[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class ProduitsRepository extends ServiceEntityRepository
+class ProduitsRepository extends AbstractRepository
 {
     public function __construct(RegistryInterface $registry)
     {
         parent::__construct($registry, Produits::class);
+    }
+    
+    public function search($term, $order = 'asc', $limit = 20, $offset = 0)
+    {
+        $qb = $this
+            ->createQueryBuilder('p')
+            ->orderBy('p.nom', $order)
+        ;
+        
+        if ($term) {
+            $qb
+                ->andWhere('p.nom LIKE :term')
+                ->setParameter('term', '%'.$term.'%')
+            ;
+        }
+        
+        return $this->paginate($qb, $limit, $offset);
     }
 
     // /**
