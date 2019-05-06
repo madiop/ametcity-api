@@ -21,6 +21,9 @@ class User implements UserInterface
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+     * 
+     * @Serializer\Expose
+     * @Serializer\Since("1.0")
      */
     private $id;
 
@@ -104,6 +107,7 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @Serializer\Expose
      */
     private $codePostale;
 

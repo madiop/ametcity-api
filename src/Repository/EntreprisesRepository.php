@@ -12,11 +12,51 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
  * @method Entreprises[]    findAll()
  * @method Entreprises[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class EntreprisesRepository extends ServiceEntityRepository
+class EntreprisesRepository  extends AbstractRepository
 {
     public function __construct(RegistryInterface $registry)
     {
         parent::__construct($registry, Entreprises::class);
+    }
+
+    public function search($term, $order = 'asc', $limit = 20, $offset = 0)
+    {
+        $qb = $this
+            ->createQueryBuilder('e')
+            ->orderBy('e.raisonSociale', $order)
+        ;
+        
+        if ($term) {
+            $qb
+                ->andWhere('e.raisonSociale LIKE :term')
+                ->setParameter('term', '%'.$term.'%')
+            ;
+        }
+        
+        return $this->paginate($qb, $limit, $offset);
+    }
+
+    public function update(Entreprises $entreprise, Entreprises $newEntreprise){
+
+        if(!is_null($newEntreprise->getRaisonSociale())){
+            $entreprise->setRaisonSociale($newEntreprise->getRaisonSociale());
+        }
+        if(!is_null($newEntreprise->getFax())){
+            $entreprise->setFax($newEntreprise->getFax());
+        }
+        if(!is_null($newEntreprise->getSiren())){
+            $entreprise->setSiren($newEntreprise->getSiren());
+        }
+        if(!is_null($newEntreprise->getRcsVille())){
+            $entreprise->setRcsVille($newEntreprise->getRcsVille());
+        }
+        if(!is_null($newEntreprise->getCodeNaf())){
+            $entreprise->setCodeNaf($newEntreprise->getCodeNaf());
+        }
+        if(!is_null($newEntreprise->getNumeroTva())){
+            $entreprise->setNumeroTva($newEntreprise->getNumeroTva());
+        }
+        return $entreprise;
     }
 
     // /**

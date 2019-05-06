@@ -41,7 +41,7 @@ class Produits
     private $description;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Categories", inversedBy="produits")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Categories", inversedBy="produits", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      * @Serializer\Expose
      * @Serializer\Since("1.0")

@@ -19,6 +19,9 @@ class Entreprises
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * 
+     * @Serializer\Expose
+     * @Serializer\Since("1.0")
      */
     private $id;
 
@@ -82,7 +85,7 @@ class Entreprises
     private $numeroTva;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Prestations", mappedBy="entreprises")
+     * @ORM\OneToMany(targetEntity="App\Entity\Prestations", mappedBy="entreprises", cascade={"persist"})
      */
     private $prestations;
 

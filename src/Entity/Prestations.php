@@ -40,7 +40,7 @@ class Prestations
     private $specifications;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Produits", inversedBy="prestations")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Produits", inversedBy="prestations", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      * 
      * @Serializer\Expose
