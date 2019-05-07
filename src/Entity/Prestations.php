@@ -35,6 +35,18 @@ class Prestations
     private $prixUnitaire;
 
     /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Produits", inversedBy="prestations", cascade={"persist"})
+     * @ORM\JoinColumn(nullable=false)
+     * 
+     * @Serializer\Expose
+     * @Serializer\Since("1.0")
+     * @Serializer\MaxDepth(2)
+     * 
+     * @Assert\NotBlank(message="Le produit doit être renseigné")
+     */
+    private $produit;
+
+    /**
      * @ORM\Column(type="text", nullable=true)
      * 
      * @Serializer\Expose
@@ -43,29 +55,20 @@ class Prestations
     private $specifications;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Produits", inversedBy="prestations", cascade={"persist"})
-     * @ORM\JoinColumn(nullable=false)
-     * 
-     * @Serializer\Expose
-     * @Serializer\Since("1.0")
-     * 
-     * @Assert\NotBlank(message="Le produit doit être renseigné")
-     */
-    private $produit;
-
-    /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Entreprises", inversedBy="prestations")
      * 
      * @Serializer\Expose
      * @Serializer\Since("1.0")
+     * @Serializer\MaxDepth(2)
      */
-    private $entreprises;
+    private $entreprise;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Professionnels", inversedBy="prestations")
      * 
      * @Serializer\Expose
      * @Serializer\Since("1.0")
+     * @Serializer\MaxDepth(2)
      */
     private $professionnel;
 
@@ -74,6 +77,7 @@ class Prestations
      * 
      * @Serializer\Expose
      * @Serializer\Since("1.0")
+     * @Serializer\MaxDepth(2)
      */
     private $devis;
 
@@ -85,9 +89,15 @@ class Prestations
      */
     private $tva;
 
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $status;
+
     public function __construct()
     {
         $this->devis = new ArrayCollection();
+        $this->status = true;
     }
 
     public function getId(): ?int
@@ -133,12 +143,12 @@ class Prestations
 
     public function getEntreprises(): ?Entreprises
     {
-        return $this->entreprises;
+        return $this->entreprise;
     }
 
-    public function setEntreprises(?Entreprises $entreprises): self
+    public function setEntreprises(?Entreprises $entreprise): self
     {
-        $this->entreprises = $entreprises;
+        $this->entreprise = $entreprise;
 
         return $this;
     }
@@ -194,6 +204,18 @@ class Prestations
     public function setTva(?float $tva): self
     {
         $this->tva = $tva;
+
+        return $this;
+    }
+
+    public function getStatus(): ?bool
+    {
+        return $this->status;
+    }
+
+    public function setStatus(?bool $status): self
+    {
+        $this->status = $status;
 
         return $this;
     }

@@ -85,7 +85,7 @@ class Entreprises
     private $numeroTva;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Prestations", mappedBy="entreprises", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="App\Entity\Prestations", mappedBy="entreprise", cascade={"persist"})
      */
     private $prestations;
 

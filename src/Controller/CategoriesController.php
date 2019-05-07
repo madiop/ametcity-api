@@ -32,7 +32,7 @@ class CategoriesController extends GenericController
      *     description="Retrieves a collection of Categories resource",
      *     @SWG\Schema(
      *         type="array",
-     *         @SWG\Items(ref=@Model(type=Categories::class, groups={"full"}))
+     *         @SWG\Items(ref=@Model(type=Categories::class))
      *     )
      * )
      * @SWG\Tag(name="categories")
