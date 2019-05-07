@@ -170,8 +170,19 @@ class PrestationsController extends GenericController
         if(is_null($prestation->getProfessionnel()) && is_null($prestation->getEntreprises())){
             throw $this->createNotFoundException('Le propriétaire de la prestation n\'est pas spécifié');
         }
+        
+        $idEnt = !is_null($prestation->getEntreprises()) ? $prestation->getEntreprises()->getId() : NULL;
+        $idProf = !is_null($prestation->getProfessionnel()) ? $prestation->getProfessionnel()->getId() : NULL;
 
-        $this->verifiePrestation($prestation);
+        $this->repository->sanitize($prestation);
+
+        if(!is_null($idProf) && is_null($prestation->getProfessionnel())){
+            throw $this->createNotFoundException('Le professionnel associé n\'existe pas');
+        }
+
+        if(!is_null($idEnt) && is_null($prestation->getEntreprises())){
+            throw $this->createNotFoundException('L\'entreprise associé n\'existe pas');
+        }
         
         $this->em->persist($prestation);
         $this->em->flush();
@@ -255,17 +266,5 @@ class PrestationsController extends GenericController
 
     private function verifiePrestation(Prestations $prestation){
 
-        $idEnt = !is_null($prestation->getEntreprises()) ? $prestation->getEntreprises()->getId() : NULL;
-        $idProf = !is_null($prestation->getProfessionnel()) ? $prestation->getProfessionnel()->getId() : NULL;
-
-        $this->repository->sanitize($prestation);
-
-        if(!is_null($idProf) && is_null($prestation->getProfessionnel())){
-            throw $this->createNotFoundException('Le professionnel associé n\'existe pas');
-        }
-
-        if(!is_null($idEnt) && is_null($prestation->getEntreprises())){
-            throw $this->createNotFoundException('L\'entreprise associé n\'existe pas');
-        }
     }
 }
