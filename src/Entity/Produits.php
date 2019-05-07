@@ -19,6 +19,9 @@ class Produits
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * 
+     * @Serializer\Expose
+     * @Serializer\Since("1.0")
      */
     private $id;
 
@@ -45,6 +48,7 @@ class Produits
      * @ORM\JoinColumn(nullable=false)
      * @Serializer\Expose
      * @Serializer\Since("1.0")
+     * @Serializer\MaxDepth(2)
      */
     private $categorie;
 

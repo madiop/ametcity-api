@@ -36,6 +36,20 @@ class ProduitsRepository extends AbstractRepository
         return $this->paginate($qb, $limit, $offset);
     }
 
+    public function update(Produits $produit, Produits $newProduit){
+
+        if(!is_null($newProduit->getNom())){
+            $produit->setNom($newProduit->getNom());
+        }
+        if(!is_null($newProduit->getDescription())){
+            $produit->setDescription($newProduit->getDescription());
+        }
+        if(!is_null($newProduit->getCategorie())){
+            $produit->setCategorie($newProduit->getCategorie());
+        }
+        return $produit;
+    }
+
     // /**
     //  * @return Produits[] Returns an array of Produits objects
     //  */

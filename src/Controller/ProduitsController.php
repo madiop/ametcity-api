@@ -13,8 +13,7 @@ use Swagger\Annotations as SWG;
 
 use App\Repository\ProduitsRepository;
 use App\Entity\Produits;
-use App\Entity\Competences;
-use App\Entity\Specialites;
+use App\Entity\Categories;
 use App\Validators\Validator;
 
 class ProduitsController extends GenericController
@@ -90,7 +89,7 @@ class ProduitsController extends GenericController
      *     default="1",
      *     description="The pagination offset"
      * )
-     * @Rest\View(populateDefaultVars=false)
+     * @Rest\View(populateDefaultVars=false, serializerEnableMaxDepthChecks=true)
      */
     public function listProduits(ParamFetcherInterface $paramFetcher)//: array
     {
@@ -100,8 +99,13 @@ class ProduitsController extends GenericController
             $paramFetcher->get('limit'),
             $paramFetcher->get('offset')
         );
-        
-        return $pager->getCurrentPageResults();
+        // var_dump($paramFetcher->get('offset'));exit;
+
+        return [
+            "totalItems" => $pager->getNbResults(),
+            "currentPage" => $pager->getCurrentPage(),
+            "items" => $pager->getCurrentPageResults()
+        ];
     }
     
     /**
@@ -130,7 +134,7 @@ class ProduitsController extends GenericController
      *     requirements = {"id"="\d+"}
      * )
      * 
-     * @Rest\View(populateDefaultVars=false)
+     * @Rest\View(populateDefaultVars=false, serializerEnableMaxDepthChecks=true)
      */
     public function getProduit(Produits $produit) : Produits
     {
@@ -162,9 +166,16 @@ class ProduitsController extends GenericController
      */
     public function createProduit(Produits $produit, ConstraintViolationList $violations): Produits
     {
-        var_dump($produit);
-        exit;
         $this->dataValidator->validate($violations);
+
+        $categorie = $produit->getCategorie();
+
+        $catRepo = $this->getDoctrine()->getRepository(Categories::class);
+        $myCat = $catRepo->findOrCreate($categorie);
+        if(is_null($myCat->getNom())){
+            throw $this->createNotFoundException('La categorie (id=' . $myCat->getId() . ') n\'existe pas');
+        };
+        $produit->setCategorie($myCat);
 
         $this->em->persist($produit);
         $this->em->flush();
@@ -207,22 +218,6 @@ class ProduitsController extends GenericController
     public function putProduit(Produits $produit, Produits $newProduit, ConstraintViolationList $violations): Produits
     {
         $this->dataValidator->validate($violations);
-        
-        $compRepo = $this->getDoctrine()->getRepository(Competences::class);
-        if(!is_null($newProduit->getCompetences())){
-            foreach($newProduit->getCompetences() as $competence){
-                $myComp = $compRepo->findOrCreate($competence);
-                $produit->addCompetence($myComp);
-            }
-        }
-        
-        $specRepo = $this->getDoctrine()->getRepository(Specialites::class);
-        if(!is_null($newProduit->getSpecialites())){
-            foreach($newProduit->getSpecialites() as $specialite){
-                $mySpec = $specRepo->findOrCreate($specialite);
-                $produit->addSpecialite($mySpec);
-            }
-        }
 
         $produit = $this->repository->update($produit, $newProduit);
         

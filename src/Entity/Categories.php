@@ -30,8 +30,6 @@ class Categories
      * 
      * @Serializer\Expose
      * @Serializer\Since("1.0")
-     * 
-     * @Assert\NotBlank(message="Le nom ne doit pas être vide")
      */
     private $id;
 

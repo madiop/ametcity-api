@@ -34,6 +34,9 @@ class Specialites
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * 
+     * @Serializer\Expose
+     * @Serializer\Since("1.0")
      */
     private $id;
 

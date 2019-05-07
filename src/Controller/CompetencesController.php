@@ -102,8 +102,12 @@ class CompetencesController extends GenericController
             $paramFetcher->get('limit'),
             $paramFetcher->get('offset')
         );
-        
-        return $pager->getCurrentPageResults();
+
+        return [
+            "totalItems" => $pager->getNbResults(),
+            "currentPage" => $pager->getCurrentPage(),
+            "items" => $pager->getCurrentPageResults()
+        ];
     }
 
 
