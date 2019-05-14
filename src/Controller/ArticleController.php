@@ -106,7 +106,6 @@ class ArticleController extends GenericController
         ];
     }
 
-
     /**
      * Retrieves an Article resource
      * @SWG\Response(

@@ -116,11 +116,20 @@ class User implements UserInterface
      */
     private $devis;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Roles", mappedBy="users")
+     * @Serializer\Expose
+     * @Serializer\Since("1.0")
+     * @Serializer\MaxDepth(2)
+     */
+    private $roles;
+
     public function __construct($username)
     {
         $this->isActive = true;
         $this->username = $username;
         $this->devis = new ArrayCollection();
+        $this->roles = new ArrayCollection();
     }
 
     /**
@@ -327,6 +336,26 @@ class User implements UserInterface
             if ($devi->getClient() === $this) {
                 $devi->setClient(null);
             }
+        }
+
+        return $this;
+    }
+
+    public function addRole(Roles $role): self
+    {
+        if (!$this->roles->contains($role)) {
+            $this->roles[] = $role;
+            $role->addUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRole(Roles $role): self
+    {
+        if ($this->roles->contains($role)) {
+            $this->roles->removeElement($role);
+            $role->removeUser($this);
         }
 
         return $this;
