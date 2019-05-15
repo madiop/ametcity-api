@@ -8,12 +8,11 @@ use JMS\Serializer\Annotation as Serializer;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-// * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
 /**
  * 
  * @Serializer\ExclusionPolicy("all")
  * @ORM\Table(name="users")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  */
 class User implements UserInterface
 {
@@ -120,9 +119,23 @@ class User implements UserInterface
      * @ORM\ManyToMany(targetEntity="App\Entity\Roles", mappedBy="users")
      * @Serializer\Expose
      * @Serializer\Since("1.0")
-     * @Serializer\MaxDepth(2)
+     * @Serializer\MaxDepth(1)
      */
     private $roles;
+
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\Professionnels", cascade={"persist", "remove"})
+     * @Serializer\Expose
+     * @Serializer\Since("1.0")
+     */
+    private $professionnel;
+
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\Entreprises", cascade={"persist", "remove"})
+     * @Serializer\Expose
+     * @Serializer\Since("1.0")
+     */
+    private $entreprise;
 
     public function __construct($username)
     {
@@ -146,22 +159,22 @@ class User implements UserInterface
     {
         return $this->username;
     }
+
     public function getSalt()
     {
         return null;
     }
+
     public function getPassword()
     {
         return $this->password;
     }
+
     public function setPassword($password)
     {
         $this->password = $password;
     }
-    public function getRoles()
-    {
-        return array('ROLE_USER');
-    }
+
     public function eraseCredentials()
     {
     }
@@ -320,6 +333,9 @@ class User implements UserInterface
 
     public function addDevi(Devis $devi): self
     {
+        if(is_null($this->devis)){
+            $this->devis = new ArrayCollection();
+        }
         if (!$this->devis->contains($devi)) {
             $this->devis[] = $devi;
             $devi->setClient($this);
@@ -330,6 +346,9 @@ class User implements UserInterface
 
     public function removeDevi(Devis $devi): self
     {
+        if(is_null($this->devis)){
+            $this->devis = new ArrayCollection();
+        }
         if ($this->devis->contains($devi)) {
             $this->devis->removeElement($devi);
             // set the owning side to null (unless already changed)
@@ -341,8 +360,18 @@ class User implements UserInterface
         return $this;
     }
 
+    public function setRoles(?ArrayCollection $roles): self
+    {
+        $this->roles = $roles;
+
+        return $this;
+    }
+
     public function addRole(Roles $role): self
     {
+        if(is_null($this->roles)){
+            $this->roles = new ArrayCollection();
+        }
         if (!$this->roles->contains($role)) {
             $this->roles[] = $role;
             $role->addUser($this);
@@ -353,10 +382,50 @@ class User implements UserInterface
 
     public function removeRole(Roles $role): self
     {
+        if(is_null($this->roles)){
+            $this->roles = new ArrayCollection();
+        }
         if ($this->roles->contains($role)) {
             $this->roles->removeElement($role);
             $role->removeUser($this);
         }
+
+        return $this;
+    }
+
+    public function getRoles()
+    {
+        if(is_null($this->roles)){
+            return null;
+        }
+        $roles = [];
+        foreach($this->roles as $role){
+            $roles[] = $role->getName();
+        }
+        return $roles;
+        // return $this->roles; // array('ROLE_USER');
+    }
+
+    public function getProfessionnel(): ?Professionnels
+    {
+        return $this->professionnel;
+    }
+
+    public function setProfessionnel(?Professionnels $professionnel): self
+    {
+        $this->professionnel = $professionnel;
+
+        return $this;
+    }
+
+    public function getEntreprise(): ?Entreprises
+    {
+        return $this->entreprise;
+    }
+
+    public function setEntreprise(?Entreprises $entreprise): self
+    {
+        $this->entreprise = $entreprise;
 
         return $this;
     }

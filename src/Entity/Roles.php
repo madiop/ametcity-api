@@ -92,6 +92,9 @@ class Roles
 
     public function addUser(User $user): self
     {
+        if(is_null($this->users)){
+            $this->users = new ArrayCollection();
+        }
         if (!$this->users->contains($user)) {
             $this->users[] = $user;
         }
@@ -101,6 +104,9 @@ class Roles
 
     public function removeUser(User $user): self
     {
+        if(is_null($this->users)){
+            $this->users = new ArrayCollection();
+        }
         if ($this->users->contains($user)) {
             $this->users->removeElement($user);
         }

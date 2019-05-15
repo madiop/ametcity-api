@@ -53,7 +53,7 @@ class RolesController extends GenericController
      *     description="Retrieves an Roles resource",
      *     @SWG\Schema(
      *         type="array",
-     *         @SWG\Items(ref=@Model(type=Roles::class, groups={"full"}))
+     *         @SWG\Items(ref=@Model(type=Roles::class))
      *     )
      * )
      * @SWG\Tag(name="roles")
@@ -65,7 +65,7 @@ class RolesController extends GenericController
      *     requirements = {"id"="\d+"}
      * )
      * 
-     * @Rest\View(populateDefaultVars=false)
+     * @Rest\View(populateDefaultVars=false, serializerEnableMaxDepthChecks=true)
      */
     public function getRole(Roles $role) : Roles
     {
@@ -113,7 +113,7 @@ class RolesController extends GenericController
      *     description="The updated Roles resource",
      *     @SWG\Schema(
      *         type="array",
-     *         @SWG\Items(ref=@Model(type=Roles::class, groups={"full"}))
+     *         @SWG\Items(ref=@Model(type=Roles::class))
      *     )
      * )
 	 * @SWG\Parameter(

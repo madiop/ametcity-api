@@ -46,10 +46,7 @@ class AuthController extends AbstractController
         $user->setPassword('');
         $user->setPassword($encoder->encodePassword($user, $password));
         $user->setDateInscription(new \DateTime());
-        // $user->setIsActive(true);
-
-        // var_dump($user);
-        // exit;
+        
         $em = $this->getDoctrine()->getManager();
         $em->persist($user);
         $em->flush();
