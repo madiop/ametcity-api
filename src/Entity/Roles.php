@@ -44,7 +44,7 @@ class Roles
      * @ORM\ManyToMany(targetEntity="App\Entity\User", inversedBy="roles")
      * @Serializer\Expose
      * @Serializer\Since("1.0")
-     * @Serializer\MaxDepth(2)
+     * @Serializer\MaxDepth(1)
      */
     private $users;
 

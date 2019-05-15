@@ -26,6 +26,16 @@ class UserRepository extends AbstractRepository
         return $this->paginate($qb, $limit, $offset);
     }
 
+    public function findOneByToken($token): ?User
+    {
+        return $this->createQueryBuilder('u')
+            ->andWhere('u.confirmationToken = :val')
+            ->setParameter('val', $token)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
+
     public function update(User $user, User $newUser){
 
         if(!is_null($newUser->getPrenom())){

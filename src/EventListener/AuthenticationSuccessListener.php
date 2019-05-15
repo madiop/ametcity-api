@@ -37,12 +37,15 @@ class AuthenticationSuccessListener //implements SerializerInterface
             'username' => $user->getUsername(),
             'email' => $user->getEmail(),
             'telephone' => $user->getTelephone(),
-            'status' => $user->getStatus(),
+            'isActive' => $user->getIsActive(),
             'adresse' => $user->getAdresse(),
             'civilite' => $user->getCivilite(),
             'ville' => $user->getVille(),
             'pays' => $user->getPays(),
-            // 'roles' => $user->getRoles()
+            'roles' => $user->getRoles(),
+            'facebook' => $user->getFacebook(),
+            'linkedin' => $user->getLinkedin(),
+            'twitter' => $user->getTwitter(),
         ];
 
         $event->setData($data);

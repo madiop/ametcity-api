@@ -19,6 +19,7 @@
         "symfony/options-resolver": "4.2.*",
         "symfony/orm-pack": "^1.0",
         "symfony/property-access": "4.2.*",
+        "symfony/swiftmailer-bundle": "^3.2",
         "symfony/validator": "4.2.*",
         "symfony/yaml": "4.2.*",
         "white-october/pagerfanta-bundle": "^1.2",

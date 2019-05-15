@@ -6,15 +6,18 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use JMS\Serializer\Annotation as Serializer;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\User\UserInterface;
+// use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\AdvancedUserInterface;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * 
- * @Serializer\ExclusionPolicy("all")
  * @ORM\Table(name="users")
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
+ * @UniqueEntity(fields="email", message="Cet adresse email est déjà utilisée.")
+ * @Serializer\ExclusionPolicy("all")
  */
-class User implements UserInterface
+class User implements AdvancedUserInterface
 {
     /**
      * @ORM\Column(type="integer")
@@ -51,8 +54,10 @@ class User implements UserInterface
     private $nom;
 
     /**
-     * @ORM\Column(type="string", length=100, nullable=true)
+     * @ORM\Column(type="string", length=100, nullable=true, unique=true)
      * @Serializer\Expose
+     * 
+     * @Assert\Email(message="Cet adresse mail n'est pas valide.")
      */
     private $email;
 
@@ -69,10 +74,10 @@ class User implements UserInterface
     private $confirmationToken;
 
     /**
-     * @ORM\Column(type="boolean", nullable=true)
+     * @ORM\Column(name="is_active", type="boolean", nullable=false, options={"default":false})
      * @Serializer\Expose
      */
-    private $status;
+    private $isActive;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
@@ -111,7 +116,24 @@ class User implements UserInterface
     private $codePostale;
 
     /**
+     * @ORM\Column(type="string", length=200, nullable=true)
+     */
+    private $facebook;
+
+    /**
+     * @ORM\Column(type="string", length=200, nullable=true)
+     */
+    private $linkedin;
+
+    /**
+     * @ORM\Column(type="string", length=200, nullable=true)
+     */
+    private $twitter;
+
+
+    /**
      * @ORM\OneToMany(targetEntity="App\Entity\Devis", mappedBy="client")
+     * @Serializer\Expose
      */
     private $devis;
 
@@ -177,6 +199,26 @@ class User implements UserInterface
 
     public function eraseCredentials()
     {
+    }    
+    
+    public function isAccountNonExpired()
+    {
+        return true;
+    }
+
+    public function isAccountNonLocked()
+    {
+        return true;
+    }
+
+    public function isCredentialsNonExpired()
+    {
+        return true;
+    }
+
+    public function isEnabled()
+    {
+        return $this->isActive;
     }
 
     public function getPrenom(): ?string
@@ -239,14 +281,14 @@ class User implements UserInterface
         return $this;
     }
 
-    public function getStatus(): ?bool
+    public function getIsActive(): ?bool
     {
-        return $this->status;
+        return $this->isActive;
     }
 
-    public function setStatus(?bool $status): self
+    public function setIsActive(?bool $isActive): self
     {
-        $this->status = $status;
+        $this->isActive = $isActive;
 
         return $this;
     }
@@ -426,6 +468,42 @@ class User implements UserInterface
     public function setEntreprise(?Entreprises $entreprise): self
     {
         $this->entreprise = $entreprise;
+
+        return $this;
+    }
+
+    public function getFacebook(): ?string
+    {
+        return $this->facebook;
+    }
+
+    public function setFacebook(string $facebook): self
+    {
+        $this->facebook = $facebook;
+
+        return $this;
+    }
+
+    public function getLinkedin(): ?string
+    {
+        return $this->linkedin;
+    }
+
+    public function setLinkedin(?string $linkedin): self
+    {
+        $this->linkedin = $linkedin;
+
+        return $this;
+    }
+
+    public function getTwitter(): ?string
+    {
+        return $this->twitter;
+    }
+
+    public function setTwitter(?string $twitter): self
+    {
+        $this->twitter = $twitter;
 
         return $this;
     }

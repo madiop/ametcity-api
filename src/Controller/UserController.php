@@ -67,7 +67,10 @@ class UserController extends GenericController
      * @SWG\Tag(name="users")
      * @Security(name="Bearer")
      *
-     * @Rest\Get("/users")
+     * @Rest\Get(
+     *     path="/users",
+     *     name="app_user_list"
+     * )
      * @Rest\QueryParam(
      *     name="keyword",
      *     nullable=true,
@@ -137,10 +140,10 @@ class UserController extends GenericController
     * 
     * @Rest\View(populateDefaultVars=false, serializerEnableMaxDepthChecks=true)
     */
-   public function getOneUser(User $user) : User
-   {
+    public function getOneUser(User $user) : User
+    {
        return $user;
-   }
+    }
 
    /**
     * Creates an User resource
@@ -162,17 +165,23 @@ class UserController extends GenericController
     *         path = "/users",
     *         name = "api_user_create"
     * )
-    * @Rest\View(populateDefaultVars=false, StatusCode = 201)
     * @ParamConverter("user", class="App\Entity\User", converter="fos_rest.request_body")
+    * @Rest\View(populateDefaultVars=false, StatusCode = 201, serializerEnableMaxDepthChecks=true)
     */
-   public function registerUser(User $user, ConstraintViolationList $violations, UserPasswordEncoderInterface $encoder): User
-   {
+    public function registerUser(User $user, ConstraintViolationList $violations, UserPasswordEncoderInterface $encoder, \Swift_Mailer $mailer): User
+    {
         $this->dataValidator->validate($violations);
         
         $password = $user->getPassword();
         $user->setPassword('');
         $user->setPassword($encoder->encodePassword($user, $password));
         $user->setDateInscription(new \DateTime());
+        $user->setIsActive(false);
+        // $random = sha1(random_bytes(12));
+        $user->setConfirmationToken(sha1(random_bytes(12)));
+
+        // var_dump($random);
+        // exit;
 
         $roles = $user->getRoles();
         $user->setRoles(null);
@@ -194,13 +203,73 @@ class UserController extends GenericController
                 }
             }
         }
-        // var_dump($user->getRoles());
-        // exit;
+
+        $message = (new \Swift_Message('Ametcity activation compte'))
+                        ->setFrom('noreplay.ametcity@ametcity.com')
+                        ->setTo('madiop44@gmail.com')
+                        ->setBody(
+                            $this->renderView(
+                                'emails/registration.html.twig',
+                                [
+                                    'name' => $user->getPrenom() . ' ' . $user->getNom(),
+                                    'key' => $user->getConfirmationToken()
+                                 ]
+                            ),
+                            'text/html'
+                        );
+        $mailer->send($message);
         
         $em = $this->getDoctrine()->getManager();
         $em->persist($user);
         $em->flush();
 
+        return $user;
+    }
+
+    /**
+     * Activate user account
+     * @SWG\Response(
+     *     response=200,
+     *     description="The activated user infoormations",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=User::class))
+     *     )
+     * )
+	 * @SWG\Parameter(
+	 *      name="key",
+	 * 	    in="path",
+	 * 	    required=true,
+	 * 	    type="string"
+	 * 	)
+     * @SWG\Tag(name="users")
+     * @Security(name="Bearer")
+     * 
+     * @Rest\QueryParam(
+     *     name="key",
+     *     nullable=false,
+     *     description="Token de confirmation du compte"
+     * )
+     * @Rest\Put(
+     *     path="/users",
+     *     name="app_user_activate"
+     * )
+     * @Rest\View(populateDefaultVars=false, serializerEnableMaxDepthChecks=true)
+     */
+    public function activateUser(ParamFetcherInterface $paramFetcher): User
+    {
+        $key = $paramFetcher->get('key');
+        $user = $this->repository->findOneByToken($key);
+
+        if(is_null($user)){
+            throw $this->createNotFoundException('La clé d\'activation est incorrect ou a expirée !');
+        }
+        $user->setIsActive(true);
+        $user->setConfirmationToken(null);
+
+        $this->em->persist($user);
+        $this->em->flush();
+        
         return $user;
     }
 
